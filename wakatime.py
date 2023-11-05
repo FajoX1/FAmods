@@ -27,6 +27,7 @@ class Wakatime(loader.Module):
 
     strings = {
         "name": "Wakatime",
+        "wait": "<emoji document_id=6334391057186293707>🕑</emoji> <b>Wait...</b>",
         "no_token": "<emoji document_id=5210952531676504517>🚫</emoji> <b>Wakatime token not set!</b>",
     }
 
@@ -63,13 +64,13 @@ class Wakatime(loader.Module):
         TODAY = "\n".join([f"{stat['text']}" for stat in today if stat["text"] != "0 secs"])
 
         return f"""
-🧑‍💻 <b>Username:</b> <code>{username}</code>
+<emoji document_id=5190458330719461749>🧑‍💻</emoji> <b>Username:</b> <code>{username}</code>
 
-🕑 <b>All time</b>: <code>{all_time}</code>
+<emoji document_id=6334391057186293707>🕑</emoji> <b>All time</b>: <code>{all_time}</code>
 📃 <b>Today</b>: <code>{TODAY}</code>
 
-🖥 <b>OS:</b> <i>{OS}</i>
-💻 <b>Editor:</b> <i>{EDITOR}</i>
+<emoji document_id=6334742097748298141>🖥</emoji> <b>OS:</b> <i>{OS}</i>
+<emoji document_id=6334357625160861194>💻</emoji> <b>Editor:</b> <i>{EDITOR}</i>
 
 <b>💈 Languages</b>
 
@@ -82,6 +83,8 @@ class Wakatime(loader.Module):
 
         if token is None:
             return await utils.answer(message, self.strings["no_token"])
+
+        await utils.answer(message, self.strings["wait"])
 
         waka_text = await self.get_waka(token)
 
