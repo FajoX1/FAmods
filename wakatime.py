@@ -18,8 +18,6 @@ import httpx
 import asyncio
 
 from .. import loader, utils
-from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.functions.account import UpdateProfileRequest
 
 @loader.tds
 class Wakatime(loader.Module):
