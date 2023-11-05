@@ -10,7 +10,7 @@
 # Name: Wakatime
 # Description: Show your Wakatime stats
 # meta developer: @FAmods
-# meta banner: 
+# meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/wakatime.png?raw=true
 # requires: httpx
 # ---------------------------------------------------------------------------------
 
