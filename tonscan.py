@@ -70,7 +70,7 @@ class Tonscan(loader.Module):
 Последння активность: </b><i>{response['last_activity']}</i><b>
 Контракт: <code>{response['interfaces'][0]}</code>
 
-<a href="{response['icon']}">Аватарка</a> • <a href="https://tonscan.org/address/{address}#transactions">История</a> • <a href="https://tonscan.org/address/{address}#nfts">NFT</a> • <a href="https://tonscan.org/address/{address}#tokens">jettons</a> • <a href="https://tonscan.org/address/{address}#source">Contract</a>
+<a href="https://tonscan.org/address/{address}">Tonscan</a> • <a href="{response['icon']}">Аватарка</a> • <a href="https://tonscan.org/address/{address}#transactions">История</a> • <a href="https://tonscan.org/address/{address}#nfts">NFT</a> • <a href="https://tonscan.org/address/{address}#tokens">jettons</a> • <a href="https://tonscan.org/address/{address}#source">Contract</a>
 </b>""")
         
     @loader.command()
@@ -122,7 +122,7 @@ class Tonscan(loader.Module):
 
 Количество держателей: <code>{response['holders_count']}</code>
 
-{socials}<a href="{response['metadata']['image']}">Лого</a> • <a href="https://tonscan.org/jetton/{address}#transactions">История</a> • <a href="https://tonscan.org/jetton/{address}#holders">Топ держателей</a> • <a href="https://tonscan.org/jetton/{address}#source">Contract</a>
+{socials}<a href="https://tonscan.org/jetton/{address}">Tonscan</a> • <a href="{response['metadata']['image']}">Лого</a> • <a href="https://tonscan.org/jetton/{address}#transactions">История</a> • <a href="https://tonscan.org/jetton/{address}#holders">Топ держателей</a> • <a href="https://tonscan.org/jetton/{address}#source">Contract</a>
 </b>""")
         
     @loader.command()
@@ -187,7 +187,7 @@ class Tonscan(loader.Module):
 Адрес: <code>{address}</code>
 {descr}
 {external_link}
-{approved_by}{socials}<a href="https://tonscan.org/nft/{address}">Коллекция</a> • <a href="{response['metadata']['image']}">Лого</a> • <a href="{response['metadata']['cover_image']}">Баннер</a>
+{approved_by}{socials}<a href="https://tonscan.org/nft/{address}">Tonscan</a> • <a href="https://tonscan.org/nft/{address}">Коллекция</a> • <a href="{response['metadata']['image']}">Лого</a> • <a href="{response['metadata']['cover_image']}">Баннер</a>
 </b>""")
         
     @loader.command()
@@ -258,5 +258,5 @@ class Tonscan(loader.Module):
 Адрес: <code>{address}</code>
 {descr}
 {external_link}
-{approved_by}{socials}<a href="{response['metadata']['image']}">NFT фото</a>
+{approved_by}{socials}<a href="https://tonscan.org/nft/{address}">Tonscan</a> • <a href="{response['metadata']['image']}">NFT фото</a>
 </b>""")
