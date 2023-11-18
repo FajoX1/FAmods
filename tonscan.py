@@ -42,7 +42,7 @@ class Tonscan(loader.Module):
 
         try:
             response['icon']
-            ava = f"<a href='{response['icon']}'>Аватарка</a> •"
+            ava = f"""<a href="{response['icon']}">Аватарка</a> •"""
         except:
             ava = ""
 
