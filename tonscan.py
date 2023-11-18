@@ -51,11 +51,12 @@ class Tonscan(loader.Module):
 ```</b>""")
         except:
            pass
-        
-        scam = "Нет"
 
-        if response['is_scam'] == "True":
+        try:
+         if response['is_scam'] == "True":
            scam = "Да"
+        except:
+            scam = "Нет"
 
         await utils.answer(message, f"""<b>
 <emoji document_id=5854713299794398583>💎</emoji> Ton wallet
