@@ -41,6 +41,12 @@ class Tonscan(loader.Module):
         response = requests.get(f"https://tonapi.io/v2/accounts/{address}").json()
 
         try:
+           response['name']
+           name = f"\nИмя: <code>{response['name']}</code>\n"
+        except:
+           name = ""
+
+        try:
           response['error']
           if "can't decode address" in response['error']:
             return await utils.answer(message, f"<b>❌ Это не адрес кошелька!</b>")
@@ -60,9 +66,7 @@ class Tonscan(loader.Module):
 
         await utils.answer(message, f"""<b>
 <emoji document_id=5854713299794398583>💎</emoji> Ton wallet
-
-Имя: <code>{response['name']}</code>
-
+{name}
 Адрес: <code>{address}</code>
 Баланс: <code>{response['balance']} TON</code>
 
