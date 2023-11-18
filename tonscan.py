@@ -15,6 +15,7 @@
 # ---------------------------------------------------------------------------------
 
 import requests
+from datetime import datetime
 
 from .. import loader, utils
 
@@ -80,7 +81,7 @@ class Tonscan(loader.Module):
 
 Скам: </b><i>{scam}</i><b>
 Статус: </b><i>{response['status']}</i><b>
-Последння активность: </b><i>{response['last_activity']}</i><b>
+Последння активность: </b><i>{datetime.fromtimestamp(response['last_activity'])}</i><b>
 Контракт: <code>{response['interfaces'][0]}</code>
 
 <a href="https://tonscan.org/address/{address}">Tonscan</a> • {ava}<a href="https://tonscan.org/address/{address}#transactions">История</a> • <a href="https://tonscan.org/address/{address}#nfts">NFT</a> • <a href="https://tonscan.org/address/{address}#tokens">jettons</a> • <a href="https://tonscan.org/address/{address}#source">Contract</a>
