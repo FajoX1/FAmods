@@ -41,6 +41,12 @@ class Tonscan(loader.Module):
         response = requests.get(f"https://tonapi.io/v2/accounts/{address}").json()
 
         try:
+            response['icon']
+            ava = f"<a href="{response['icon']}">Аватарка</a> •"
+        except:
+            ava = ""
+
+        try:
            response['name']
            name = f"\nИмя: <code>{response['name']}</code>\n"
         except:
@@ -75,7 +81,7 @@ class Tonscan(loader.Module):
 Последння активность: </b><i>{response['last_activity']}</i><b>
 Контракт: <code>{response['interfaces'][0]}</code>
 
-<a href="https://tonscan.org/address/{address}">Tonscan</a> • <a href="{response['icon']}">Аватарка</a> • <a href="https://tonscan.org/address/{address}#transactions">История</a> • <a href="https://tonscan.org/address/{address}#nfts">NFT</a> • <a href="https://tonscan.org/address/{address}#tokens">jettons</a> • <a href="https://tonscan.org/address/{address}#source">Contract</a>
+<a href="https://tonscan.org/address/{address}">Tonscan</a> • {ava}<a href="https://tonscan.org/address/{address}#transactions">История</a> • <a href="https://tonscan.org/address/{address}#nfts">NFT</a> • <a href="https://tonscan.org/address/{address}#tokens">jettons</a> • <a href="https://tonscan.org/address/{address}#source">Contract</a>
 </b>""")
         
     @loader.command()
