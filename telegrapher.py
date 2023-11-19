@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: Telegrapher
-# Description: Создание статей и другое связанное с telegrapher
+# Description: Создание статей и другое связанное с telegra.ph
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/telegrapher.png?raw=true
 # requires: telegraph
