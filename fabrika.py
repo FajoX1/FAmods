@@ -15,8 +15,13 @@
 
 import random
 import asyncio
+import logging
+
+from telethon.tl.functions.channels import JoinChannelRequest
 
 from .. import loader, utils
+
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class Fabrika(loader.Module):
@@ -39,6 +44,17 @@ class Fabrika(loader.Module):
         "bonus_on": "<b><emoji document_id=5852779353330421386>🎁</emoji> Авто-бонус включен!</b>",
         "bonus_off": "<b><emoji document_id=5854929766146118183>🚫</emoji> Авто-бонус выключен!</b>",
     }
+
+    async def client_ready(self, client, db):
+        self.db = db
+        self._client = client
+
+        # morisummermods feature
+        try:
+            channel = await self.client.get_entity("t.me/famods")
+            await client(JoinChannelRequest(channel))
+        except Exception:
+            logger.error("Can't join @famods")
 
     async def _slavesw(self):
         async with self._client.conversation("@fabrika") as conv:

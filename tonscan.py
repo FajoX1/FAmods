@@ -14,10 +14,15 @@
 # requires: requests
 # ---------------------------------------------------------------------------------
 
+import logging
 import requests
 from datetime import datetime
 
+from telethon.tl.functions.channels import JoinChannelRequest
+
 from .. import loader, utils
+
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class Tonscan(loader.Module):
@@ -28,6 +33,17 @@ class Tonscan(loader.Module):
 
         "waiting": "<b><emoji document_id=6334391057186293707>🕑</emoji> Собираю информацию...</b>",
     }
+
+    async def client_ready(self, client, db):
+        self.db = db
+        self._client = client
+
+        # morisummermods feature
+        try:
+            channel = await self.client.get_entity("t.me/famods")
+            await client(JoinChannelRequest(channel))
+        except Exception:
+            logger.error("Can't join @famods")
 
     @loader.command()
     async def tonwallet(self, message):

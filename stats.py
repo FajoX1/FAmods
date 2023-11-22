@@ -14,10 +14,13 @@
 # ---------------------------------------------------------------------------------
 
 from datetime import datetime
+import logging
 
-from telethon.tl import functions, types
+from telethon.tl.functions.channels import JoinChannelRequest
 
 from .. import loader, utils
+
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class Stats(loader.Module):
@@ -26,6 +29,17 @@ class Stats(loader.Module):
     strings = {
         "name": "Stats",
     }
+
+    async def client_ready(self, client, db):
+        self.db = db
+        self._client = client
+
+        # morisummermods feature
+        try:
+            channel = await self.client.get_entity("t.me/famods")
+            await client(JoinChannelRequest(channel))
+        except Exception:
+            logger.error("Can't join @famods")
 
     @loader.command()
     async def stats(self, message):

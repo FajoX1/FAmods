@@ -16,8 +16,13 @@
 
 import faker
 import random
+import logging
+
+from telethon.tl.functions.channels import JoinChannelRequest
 
 from .. import loader, utils
+
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class Faker(loader.Module):
@@ -27,6 +32,17 @@ class Faker(loader.Module):
         "name": "Faker",
         "loading": "<b><emoji document_id=5332600281970517875>🔄</emoji> Генерирую информацию...</b>"
     }
+
+    async def client_ready(self, client, db):
+        self.db = db
+        self._client = client
+
+        # morisummermods feature
+        try:
+            channel = await self.client.get_entity("t.me/famods")
+            await client(JoinChannelRequest(channel))
+        except Exception:
+            logger.error("Can't join @famods")
 
     async def _gen_fake(self):
 

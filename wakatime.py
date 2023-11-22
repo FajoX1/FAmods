@@ -16,8 +16,13 @@
 
 import httpx
 import asyncio
+import logging
+
+from telethon.tl.functions.channels import JoinChannelRequest
 
 from .. import loader, utils
+
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class Wakatime(loader.Module):
@@ -38,6 +43,17 @@ class Wakatime(loader.Module):
             )
         )
 
+    async def client_ready(self, client, db):
+        self.db = db
+        self._client = client
+
+        # morisummermods feature
+        try:
+            channel = await self.client.get_entity("t.me/famods")
+            await client(JoinChannelRequest(channel))
+        except Exception:
+            logger.error("Can't join @famods")
+
     async def _get_data(self, endpoint, token):
         url = f"https://wakatime.com/api/v1/users/current/{endpoint}?api_key={token}"
         async with httpx.AsyncClient() as client:
@@ -52,13 +68,24 @@ class Wakatime(loader.Module):
 
         all_time = data_all_time_since_today["data"]["text"]
         username = data_all_time["data"]["username"]
-        languages = data_all_time["data"]["languages"]
+        if not username:
+           username = "Нету"
+        try:
+          languages = data_all_time["data"]["languages"]
+        except:
+            languages = []
         today = data_today["data"]["categories"]
-        os = data_all_time["data"]["operating_systems"]
+        try:
+           os = data_all_time["data"]["operating_systems"]
+        except:
+            pass
         OS = ", ".join([f"<code>{stat['name']}</code>" for stat in os if stat["text"] != "0 secs"])
         editor = data_all_time["data"]["editors"]
         EDITOR = ", ".join([f"<code>{stat['name']}</code> " for stat in editor if stat["text"] != "0 secs"])
-        LANG = "\n".join([f"▫️ <b>{stat['name']}</b>: <i>{stat['text']}</i>" for stat in languages if stat["text"] != "0 secs"])
+        try:
+           LANG = "\n".join([f"▫️ <b>{stat['name']}</b>: <i>{stat['text']}</i>" for stat in languages if stat["text"] != "0 secs"])
+        except:
+            LANG = ""
         TODAY = "\n".join([f"{stat['text']}" for stat in today if stat["text"] != "0 secs"])
 
         return f"""
@@ -68,7 +95,7 @@ class Wakatime(loader.Module):
 📃 <b>Today</b>: <code>{TODAY}</code>
 
 <emoji document_id=6334742097748298141>🖥</emoji> <b>OS:</b> <i>{OS}</i>
-<emoji document_id=6334357625160861194>💻</emoji> <b>Editor:</b> <i>{EDITOR}</i>
+<emoji document_id=5807454683714817955>💻</emoji> <b>Editor:</b> <i>{EDITOR}</i>
 
 <b>💈 Languages</b>
 

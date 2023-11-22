@@ -13,9 +13,14 @@
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/timer.png?raw=true
 # ---------------------------------------------------------------------------------
 
+import logging
 from datetime import datetime
 
+from telethon.tl.functions.channels import JoinChannelRequest
+
 from .. import loader, utils
+
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class Timer(loader.Module):
@@ -42,6 +47,17 @@ class Timer(loader.Module):
                 lambda: "Дата до которой нужно считать. Пример: 25.04.2025 17:05",
             ),
         )
+
+    async def client_ready(self, client, db):
+        self.db = db
+        self._client = client
+
+        # morisummermods feature
+        try:
+            channel = await self.client.get_entity("t.me/famods")
+            await client(JoinChannelRequest(channel))
+        except Exception:
+            logger.error("Can't join @famods")
 
     @loader.command()
     async def stime(self, message):

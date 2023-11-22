@@ -14,8 +14,13 @@
 # ---------------------------------------------------------------------------------
 
 import base64
+import logging
+
+from telethon.tl.functions.channels import JoinChannelRequest
 
 from .. import loader, utils
+
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class CodeBase64(loader.Module):
@@ -26,6 +31,17 @@ class CodeBase64(loader.Module):
         "enc_txt": "<b><emoji document_id=6334316848741352906>⌨️</emoji> You encoded text into base64:</b>\n<code>{}</code>",
         "de_txt": "<b><emoji document_id=6334316848741352906>⌨️</emoji> You decoded text from base64:</b>\n<code>{}</code>",
     }
+
+    async def client_ready(self, client, db):
+        self.db = db
+        self._client = client
+
+        # morisummermods feature
+        try:
+            channel = await self.client.get_entity("t.me/famods")
+            await client(JoinChannelRequest(channel))
+        except Exception:
+            logger.error("Can't join @famods")
 
     @loader.command()
     async def cbase64(self, message):
