@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: TonDNS
-# Description: Модуль для работы с Ton DNS
+# Description: Модуль для работы с TON DNS
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/tondns.png?raw=true
 # requires: requests
