@@ -40,6 +40,7 @@ class Wakatime(loader.Module):
                 "WAKATIME_TOKEN",
                 None,
                 lambda: "Your wakatime token",
+                validator=loader.validators.Hidden(loader.validators.String()),
             )
         )
 
