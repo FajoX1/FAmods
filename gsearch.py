@@ -62,6 +62,11 @@ class Gsearch(loader.Module):
                 "ru",
                 lambda: "Язык результатов",
             ),
+            loader.ConfigValue(
+                "emoji",
+                "<emoji document_id=5098187078693290864>▪️</emoji>",
+                lambda: "Эмодзи в результатах поиска",
+            ),
         )
 
     async def client_ready(self, client, db):
