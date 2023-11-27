@@ -101,8 +101,10 @@ class Gsearch(loader.Module):
 
         searched_result = ""
 
+        emojii = self.config["emoji"]
+
         for url in search(q, stop=self.config["results"], lang=self.config["safe_search"], safe=safe_s):
-           searched_result += f"\n<emoji document_id=5098187078693290864>▪️</emoji> <i>{unquote(url)}</i>"
+           searched_result += f"\n{emojii} <i>{unquote(url)}</i>"
            count_s += 1
 
         end_time = time.time()
