@@ -116,10 +116,13 @@ class Gsearch(loader.Module):
 
         for url in search(q, stop=self.config["results"], lang=self.config["safe_search"], safe=safe_s):
             if self.config['show_title']:
-                html = (requests.get(unquote(url), headers={"User-Agent": self.config['user_agent']})).content
-                soup = BeautifulSoup(html, 'html.parser')
-                title = soup.find('title').text
-                searched_result += f"\n{emojii} <i><a href='{unquote(url)}'>{title}</a></i>"
+                try:
+                  html = (requests.get(unquote(url), headers={"User-Agent": self.config['user_agent']})).content
+                  soup = BeautifulSoup(html, 'html.parser')
+                  title = soup.find('title').text
+                  searched_result += f"\n{emojii} <i><a href='{unquote(url)}'>{title}</a></i>"
+                except:
+                    searched_result += f"\n{emojii} <i>{unquote(url)}</i>"
             else:
                 searched_result += f"\n{emojii} <i>{unquote(url)}</i>"
             count_s += 1
