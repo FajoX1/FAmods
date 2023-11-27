@@ -15,9 +15,10 @@
 # ---------------------------------------------------------------------------------
 
 import time
-import asyncio
 import logging
+import requests
 
+from bs4 import BeautifulSoup
 from googlesearch import search
 from urllib.parse import unquote
 
@@ -67,6 +68,16 @@ class Gsearch(loader.Module):
                 "<emoji document_id=5098187078693290864>▪️</emoji>",
                 lambda: "Эмодзи в результатах поиска",
             ),
+            loader.ConfigValue(
+                "user_agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+                lambda: "Ваш User-Agent"
+            ),
+            loader.ConfigValue(
+                "show_title",
+                False,
+                lambda: "Заголовки в результате"
+            )
         )
 
     async def client_ready(self, client, db):
@@ -104,8 +115,14 @@ class Gsearch(loader.Module):
         emojii = self.config["emoji"]
 
         for url in search(q, stop=self.config["results"], lang=self.config["safe_search"], safe=safe_s):
-           searched_result += f"\n{emojii} <i>{unquote(url)}</i>"
-           count_s += 1
+            if self.config['show_title']:
+                html = (requests.get(unquote(url), headers={"User-Agent": self.config['user_agent']})).content
+                soup = BeautifulSoup(html, 'html.parser')
+                title = soup.find('title').text
+                searched_result += f"\n{emojii} <i><a href='{unquote(url)}'>{title}</a></i>"
+            else:
+                searched_result += f"\n{emojii} <i>{unquote(url)}</i>"
+            count_s += 1
 
         end_time = time.time()
         execution_time = end_time - start_time
