@@ -10,3 +10,4 @@ telegrapher
 timer
 tondns
 gsearch
+infoip
