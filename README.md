@@ -3,14 +3,14 @@
 
 ## ⌨️ Установка
 ### Обычная установка в Hikka
-<pre><code>.dlmod https://raw.githubusercontent.com/FajoX1/FAmods/main/<b><i>название_модуля</i></b>.py</code></pre>
+<pre><code>.dlmod https://raw.githubusercontent.com/FajoX1/FAmods/main/<b><i>{название_модуля}</i></b>.py</code></pre>
 <hr>
 
 ### Установка репозитория
 > Установить репозиторий
 <pre><code>.addrepo https://github.com/FajoX1/FAmods/raw/main</code></pre>
 > Установка модуля
-<pre><code>.dlmod <b><i>название_модуля</i></b></code></pre>
+<pre><code>.dlmod <b><i>{название_модуля}</i></b></code></pre>
 
 ## 📝 Лицензия
 > <i>Все файлы этого репозитория находятся под <b>GNU AGPLv3.</b></i><br>
