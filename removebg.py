@@ -36,7 +36,7 @@ class RemoveBG(loader.Module):
         "no_photo": "<emoji document_id=5854929766146118183>❌</emoji> <b>Нужно ответить на фото!</b>",
         "no_token": "<emoji document_id=5854929766146118183>❌</emoji> <b>Нету токена! Поставь его в <code>{}cfg RemoveBG</code></b>",
         "invalid_token": "<b>😕 Неверный токен</b>",
-        "only_photo": "<b>😕 Удалять фон можно только с фото (.png, .jpg)</b>",
+        "only_photo": "<b>😕 Удалять фон можно только с фото (.png, .jpg, .jpeg)</b>",
 
         "removing_bg": "<emoji document_id=5326015457155620929>🔄</emoji> <b>Удаление фона...</b>",
     }
@@ -71,7 +71,7 @@ class RemoveBG(loader.Module):
             return await utils.answer(message, self.strings("no_photo"))
         
         try:
-            if not any(ext in reply.file.name for ext in [".png", ".jpg"]):
+            if not any(ext in reply.file.name for ext in [".png", ".jpg", ".jpeg"]):
               return await utils.answer(message, self.strings['only_photo'])
         except TypeError:
             return await utils.answer(message, self.strings['must_be_forced'])
@@ -100,7 +100,7 @@ class RemoveBG(loader.Module):
                 return await utils.answer(message, self.strings['invalid_token'])
             except:
                 pass
-            file_namee = f"famods-no-bg-{reply.file.name.replace('.jpg', '').replace('.png', '')}.png"
+            file_namee = f"famods-no-bg-{reply.file.name.replace('.jpg', '').replace('.png', '').replace('.jpeg', '')}.png"
             with open(os.path.join(temp_dir, file_namee), 'wb') as out:
                out.write(response.content)
     
