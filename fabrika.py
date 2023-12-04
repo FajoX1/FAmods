@@ -35,11 +35,17 @@ class Fabrika(loader.Module):
         "rw_on_already": "<b>🗿 Авто отправка рабочих уже включена!</b>",
         "rw_off_already": "<b>🗿 Авто отправка рабочих уже выключена!</b>",
 
+        "team_on_already": "<b>🗿 Авто отправка на комадную работу уже включена!</b>",
+        "team_off_already": "<b>🗿 Авто отправка на комадную работу уже выключена!</b>",
+
         "autobonus_on_already": "<b>🗿 Авто-бонус уже включен!</b>",
         "autobonus_off_already": "<b>🗿 Авто-бонус уже выключен!</b>",
 
         "rw_on": "<b><emoji document_id=5429633836684157942>⚡️</emoji> Отправка рабочих включена!</b>",
         "rw_off": "<b><emoji document_id=5854929766146118183>🚫</emoji> Отправка рабочих выключена!</b>",
+
+        "team_on": "<b><emoji document_id=5429633836684157942>⚡️</emoji> Командная работа включена!</b>",
+        "team_off": "<b><emoji document_id=5854929766146118183>🚫</emoji> Командная работа выключена!</b>",
 
         "bonus_on": "<b><emoji document_id=5852779353330421386>🎁</emoji> Авто-бонус включен!</b>",
         "bonus_off": "<b><emoji document_id=5854929766146118183>🚫</emoji> Авто-бонус выключен!</b>",
@@ -64,6 +70,21 @@ class Fabrika(loader.Module):
             r = await conv.get_response()
             await r.click(1)
             r = await conv.get_edit()
+            await r.click(0)
+            await r.delete()
+
+    async def _teamw(self):
+        async with self._client.conversation("@fabrika") as conv:
+            msg = await conv.send_message("/start")
+            await msg.delete()
+
+            r = await conv.get_response()
+            await r.click(5)
+            await asyncio.sleep(2.61)
+            r = await conv.get_edit()
+            await r.click(3)
+            await asyncio.sleep(3.61)
+            r = await conv.get_response()
             await r.click(0)
             await r.delete()
 
@@ -129,6 +150,32 @@ class Fabrika(loader.Module):
         self.db.set(self.name, "autobonus", False)
 
         await utils.answer(message, self.strings["bonus_off"])
+
+    @loader.command()
+    async def teamon(self, message):
+        """Начать автоматически отправлятся на комадную работу"""
+
+        status = self.db.get(self.name, "team", False)
+        if status:
+            return await utils.answer(message, self.strings["team_on_already"])
+
+        self.db.set(self.name, "team", True)
+
+        await utils.answer(message, self.strings["team_on"])
+
+        await self._teamw()
+
+    @loader.command()
+    async def teamoff(self, message):
+        """Остановить автоматически отправлятся на комадную работу"""
+
+        status = self.db.get(self.name, "team", False)
+        if not status:
+            return await utils.answer(message, self.strings["team_off_already"])
+
+        self.db.set(self.name, "team", False)
+
+        await utils.answer(message, self.strings["team_off"])
     
     @loader.command()
     async def sprof(self, message):
@@ -157,3 +204,6 @@ class Fabrika(loader.Module):
         if all(keyword in event.raw_text for keyword in ["Ваши рабочие", "законч", "работу"]):
           if self.db.get(self.name, "slaves_w", False):
             await self._slavesw()
+        if "Командная работа завершена!" in event.raw_text:
+          if self.db.get(self.name, "team", False):
+            await self._teamw()
