@@ -6,7 +6,7 @@
 
 </div>
 
-## ⌨️ Установка
+## ⬇️ Установка
 ### Обычная установка в Hikka
 <pre><code>.dlmod https://raw.githubusercontent.com/FajoX1/FAmods/main/<b><i>{название_модуля}</i></b>.py</code></pre>
 <hr>
