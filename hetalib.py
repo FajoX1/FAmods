@@ -79,7 +79,11 @@ class HetaLib(loader.Module):
 
         smods = heta.search(query=q, limit=self.config["search_limit_result"], app_name=self.app_name)
         
-        mtext = "<b>⛩ Heta search ⛩</b>\n\n"
+        mtext = f"""<b>⛩ Heta search ⛩
+
+<emoji document_id=5188311512791393083>🔎</emoji> Запрос: </b><code>{q}</code>
+
+"""
 
         for mod in smods:
             mtext += f"""<b>🖥 {mod['module']['name']} (<a href="{mod['module']['link']}">source</a>) by {mod['module']['dev']}
