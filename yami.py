@@ -86,7 +86,7 @@ class Yami(loader.Module):
             await r.delete()
             await utils.answer(message, f"<b>{r.text}</b>")
 
-    @loader.loop(interval=60*60*24, autostart=True)
+    @loader.loop(interval=60*60, autostart=True)
     async def loop(self):
       if self.db.get(self.name, "autofarm", False):
         await asyncio.sleep(random.randint(65, 100))
