@@ -47,7 +47,7 @@ class CodeBase64(loader.Module):
     async def cbase64(self, message):
         """Code into base64"""
         enc_bytes = base64.b64encode(utils.get_args_raw(message).encode('utf-8'))
-        enc_text = enc_bytes.decode('utf-8')
+        enc_text = enc_bytes
 
         await utils.answer(message, self.strings["enc_txt"].format(enc_text))
 
@@ -55,6 +55,6 @@ class CodeBase64(loader.Module):
     async def dbase64(self, message):
         """Decode base64"""
         de_bytes = base64.b64decode(utils.get_args_raw(message))
-        de_text = de_bytes.decode('utf-8')
+        de_text = de_bytes
 
         await utils.answer(message, self.strings["de_txt"].format(de_text))
