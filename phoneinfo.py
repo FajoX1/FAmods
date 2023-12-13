@@ -29,12 +29,12 @@ class PhoneInfo(loader.Module):
     strings = {
         "name": "PhoneInfo",
 
-        "no_phone": "<emoji document_id=5440381017384822513>❌</emoji> <bНужно <code>{}pninfo [название телефона]</code></b>",
+        "no_phone": "<emoji document_id=5440381017384822513>❌</emoji> <b>Нужно <code>{}{} [название телефона]</code></b>",
 
         "searching": "<emoji document_id=5334904192622403796>🔄</emoji> <b>Поиск телефона...</b>",
         "searching_info": "<emoji document_id=5334904192622403796>🔄</emoji> <b>Поиск информации о телефоне...</b>",
 
-        "no_found": "<emoji document_id=5440381017384822513>❌</emoji> <bНе нашёл такой телефон</b>",
+        "no_found": "<emoji document_id=5440381017384822513>❌</emoji> <b>Не нашёл такой телефон</b>",
 
         "cameras_txt": "<emoji document_id=5787632606484893320>📷</emoji> Cameras:",
         "software_txt": "<emoji document_id=6334742097748298141>🖥</emoji> Software:",
@@ -80,9 +80,9 @@ class PhoneInfo(loader.Module):
             
             url = result.send_message.reply_markup.rows[0].buttons[0].url
 
-            return (message, url)
+            return {'info': message, 'link': url}
         except (IndexError, AttributeError):
-            return "not found"
+            return {'info': "no found"}
         
     async def _get_phones(self, query):
         try:
@@ -106,9 +106,9 @@ class PhoneInfo(loader.Module):
 
                 c_res += 1
 
-            return (resultss, c_res)
+            return {'result': resultss, 'count_result_res': c_res}
         except (IndexError, AttributeError):
-            return "not found"
+            return {"result": "no found"}
         
     @loader.command()
     async def pnsearch(self, message):
@@ -117,15 +117,15 @@ class PhoneInfo(loader.Module):
         query = utils.get_args_raw(message)
 
         if not query:
-            return await utils.answer(message, self.strings['no_phone'])
+            return await utils.answer(message, self.strings['no_phone'].format(self.get_prefix(), 'pnsearch'))
 
         await utils.answer(message, self.strings['searching'])
 
         start_time = time.time()
 
-        phones, counts_result = await self._get_phones(query)
+        phones = await self._get_phones(query)
         
-        if phones == "no found":
+        if phones['result'] == "no found":
             return await utils.answer(message, self.strings['no_found'])
         
         txt = f"""<b>
@@ -135,13 +135,13 @@ class PhoneInfo(loader.Module):
 
 </b>"""
         
-        for phone in phones:
+        for phone in phones['result']:
             txt += f"<b>📱 {phone['name']}\n🔗 {phone['link']}</b>\n\n"
         
         end_time = time.time()
         execution_time = end_time - start_time
         
-        txt += f"<i>{counts_result} результатов за {execution_time} сек</i>"
+        txt += f"<i>{phones['count_result_res']} результатов за {execution_time} сек</i>"
     
         return await utils.answer(message, txt)
 
@@ -152,13 +152,13 @@ class PhoneInfo(loader.Module):
         query = utils.get_args_raw(message)
 
         if not query:
-            return await utils.answer(message, self.strings['no_phone'])
+            return await utils.answer(message, self.strings['no_phone'].format(self.get_prefix(), 'pninfo'))
 
         await utils.answer(message, self.strings['searching_info'])
 
-        info, link = await self._get_phone_info(query)
+        info = await self._get_phone_info(query)
         
-        if info == "no found":
+        if info['info'] == "no found":
             return await utils.answer(message, self.strings['no_found'])
         
         txt = f"""<b>
@@ -166,14 +166,14 @@ class PhoneInfo(loader.Module):
 
 <emoji document_id=5188311512791393083>🔎</emoji> Запрос: <code>{query}</code>
 
-<emoji document_id=5406809207947142040>📲</emoji> {info}
+<emoji document_id=5406809207947142040>📲</emoji> {info['info']}
 </b>"""
         
         keyboard = [
             [
                 {
                     "text": "Полная информация о телефоне",
-                    "url": link,
+                    "url": info['link'],
                 }
             ],
         ]
