@@ -80,11 +80,11 @@ class Fabrika(loader.Module):
 
             r = await conv.get_response()
             await r.click(5)
-            await asyncio.sleep(2.61)
             r = await conv.get_edit()
+            await asyncio.sleep(2.61)
             await r.click(3)
+            r = await conv.get_edit()
             await asyncio.sleep(3.61)
-            r = await conv.get_response()
             await r.click(0)
             await r.delete()
 
