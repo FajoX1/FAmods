@@ -13,3 +13,5 @@ gsearch
 infoip
 removebg
 hetalib
+phoneinfo
+checkhost
