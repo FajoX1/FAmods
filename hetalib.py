@@ -17,6 +17,8 @@
 import heta
 import requests
 
+from pip._internal import main as pip_main
+
 import logging
 
 from telethon.tl.functions.channels import JoinChannelRequest
@@ -65,7 +67,7 @@ class HetaLib(loader.Module):
             channel = await self.client.get_entity("t.me/famods")
             await client(JoinChannelRequest(channel))
         except Exception:
-            logger.error("Can't join @famods")
+            logger.error("Can't join @famods")        
 
     @loader.command()
     async def hsearch(self, message):
@@ -137,6 +139,6 @@ class HetaLib(loader.Module):
 """
         
         for mod in mods:
-            mdsrepo += f"<i>{mod['name']}</i>\n"
+            mdsrepo += f"<i>{mod['name']}</i> (<i><a href='{mod['link']}'>ссылка</a></i>)\n"
         
         await utils.answer(message, mdsrepo)
