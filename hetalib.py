@@ -7,20 +7,19 @@
 # 🌐 https://www.gnu.org/licenses/agpl-3.0.html
 
 # ---------------------------------------------------------------------------------
-# Name: Gsearch
-# Description: Поиск в Google
+# Name: HetaLib
+# Description: Модуль для работы с heta
 # meta developer: @FAmods
-# meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/gsearch.png?raw=true
-# requires: google
+# meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/hetalib.png?raw=true
+# requires: heta requests
 # ---------------------------------------------------------------------------------
 
-import time
-import logging
+import heta
 import requests
 
-from bs4 import BeautifulSoup
-from googlesearch import search
-from urllib.parse import unquote
+from pip._internal import main as pip_main
+
+import logging
 
 from telethon.tl.functions.channels import JoinChannelRequest
 
@@ -29,60 +28,34 @@ from .. import loader, utils
 logger = logging.getLogger(__name__)
 
 @loader.tds
-class Gsearch(loader.Module):
-    """Поиск в Google"""
+class HetaLib(loader.Module):
+    """Модуль для работы с heta"""
 
     strings = {
-        "name": "Gsearch",
+        "name": "HetaLib",
 
-        "no_q": "<emoji document_id=5854929766146118183>❌</emoji> <b>Должно быть .gsearch [запрос]</b>",
-        "no_result": "<b>😕 Ничего не нашёл по этому запросу</b>",
+        "no_q": "<emoji document_id=5854929766146118183>❌</emoji> <b>Должно быть <code>{}hsearch [запрос]</code></b>",
+        "no_hh": "<emoji document_id=5854929766146118183>❌</emoji> <b>Должно быть <code>{}decode_hhash [хэш]</code></b>",
+        "no_repo": "<emoji document_id=5854929766146118183>❌</emoji> <b>Должно быть <code>{}mods_repo [ссылка_на_репозиторий]</code></b>",
 
-        "searching": "<emoji document_id=5326015457155620929>🔄</emoji> <b>Поиск в google.com...</b>",
-        "searched": """<b>
-<emoji document_id=5308054573938647180>🔎</emoji> Результаты поиска
+        "invalid_hh": "<b>😕 Неверный хэш</b>",
+        "invalid_repo": "<b>😕 Неверный репозиторий модулей</b>",
+        "no_modules_in_repo": "<b>😕 Нету модулей в репозитории</b>",
 
-<emoji document_id=5188311512791393083>🔎</emoji> Запрос:</b> <code>{}</code>
-{}
-
-<i>{} результатов за {} сек</i>
-</b>""",
+        "searching": "<emoji document_id=5307710821936145414>🔄</emoji> <b>Поиск модулей...</b>",
+        "receiving_modules": "<emoji document_id=5325792861885570739>🔄</emoji> <b>Получаю модули...</b>",
+        "decoding": "<emoji document_id=5307981757063110606>🔄</emoji> <b>Декодирую хэш...</b>",
     }
+
+    app_name = "famods Hetalib"
 
     def __init__(self):
         self.config = loader.ModuleConfig(
             loader.ConfigValue(
-                "results",
+                "search_limit_result",
                 5,
-                lambda: "Количество результатов",
+                lambda: "Максимум результатов поиска будет при поиске модулей.",
             ),
-            loader.ConfigValue(
-                "safe_search",
-                False,
-                lambda: "Безопастный поиск",
-                validator=loader.validators.Boolean(),
-            ),
-            loader.ConfigValue(
-                "lang",
-                "ru",
-                lambda: "Язык результатов",
-            ),
-            loader.ConfigValue(
-                "emoji",
-                "<emoji document_id=5098187078693290864>▪️</emoji>",
-                lambda: "Эмодзи в результатах поиска",
-            ),
-            loader.ConfigValue(
-                "user_agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
-                lambda: "Ваш User-Agent"
-            ),
-            loader.ConfigValue(
-                "show_title",
-                True,
-                lambda: "Заголовки в результате",
-                validator=loader.validators.Boolean()
-            )
         )
 
     async def client_ready(self, client, db):
@@ -94,48 +67,78 @@ class Gsearch(loader.Module):
             channel = await self.client.get_entity("t.me/famods")
             await client(JoinChannelRequest(channel))
         except Exception:
-            logger.error("Can't join @famods")
+            logger.error("Can't join @famods")        
 
     @loader.command()
-    async def gsearch(self, message):
-        """Поиск в Google"""
+    async def hsearch(self, message):
+        """Поиск модуля в heta"""
 
         q = utils.get_args_raw(message)
         if not q:
-            return await utils.answer(message, self.strings["no_q"])
-
+            return await utils.answer(message, self.strings["no_q"].format(self.get_prefix()))
+        
         await utils.answer(message, self.strings['searching'])
 
-        safe_s = "off"
-
-        if self.config["safe_search"]:
-            safe_s = "on"
-
-        count_s = 0
-
-        start_time = time.time()
-
-        searched_result = ""
-
-        emojii = self.config["emoji"]
-
-        for url in search(q, stop=self.config["results"], lang=self.config["safe_search"], safe=safe_s):
-            if self.config['show_title']:
-                try:
-                  html = (requests.get(unquote(url), headers={"User-Agent": self.config['user_agent']})).content
-                  soup = BeautifulSoup(html, 'html.parser')
-                  title = soup.find('title').text
-                  searched_result += f"\n{emojii} <i><a href='{unquote(url)}'>{title}</a></i>"
-                except:
-                    searched_result += f"\n{emojii} <i>{unquote(url)}</i>"
-            else:
-                searched_result += f"\n{emojii} <i>{unquote(url)}</i>"
-            count_s += 1
-
-        end_time = time.time()
-        execution_time = end_time - start_time
+        smods = heta.search(query=q, limit=self.config["search_limit_result"], app_name=self.app_name)
         
-        if count_s == 0:
-            return await utils.answer(message, self.strings['no_result'])
+        mtext = f"""<b>⛩ Heta search ⛩
 
-        return await utils.answer(message, self.strings['searched'].format(q, searched_result, count_s, execution_time))
+<emoji document_id=5188311512791393083>🔎</emoji> Запрос: </b><code>{q}</code>
+
+"""
+
+        for mod in smods:
+            mtext += f"""<b>🖥 {mod['module']['name']} (<a href="{mod['module']['link']}">source</a>) by {mod['module']['dev']}
+ℹ️ </b><i>{mod['module']['cls_doc']}</i><b>
+<code>{self.get_prefix()}dlh {mod['module']['hash']}</code>
+——
+</b>"""
+        
+        await utils.answer(message, mtext)
+
+    @loader.command()
+    async def decode_hhash(self, message):
+        """Декодировать heta hash"""
+
+        hhash = utils.get_args_raw(message)
+        if not hhash:
+            return await utils.answer(message, self.strings["no_hh"].format(self.get_prefix()))
+        
+        await utils.answer(message, self.strings['decoding'])
+
+        try:
+           hh_info = heta.decode_hash(mhash=hhash, app_name=self.app_name)
+        except requests.exceptions.JSONDecodeError:
+            return await utils.answer(message, self.strings['invalid_hh'])
+        
+        await utils.answer(message, f"""<b>
+🖥 {hh_info['name']} (<a href="{hh_info['link']}">source</a>)
+<code>{self.get_prefix()}dlh {hhash}</code>
+</b>""")
+        
+    @loader.command()
+    async def mods_repo(self, message):
+        """Получить модули с репозитория"""
+
+        rep = utils.get_args_raw(message)
+        if not rep:
+            return await utils.answer(message, self.strings["no_repo"].format(self.get_prefix()))
+        
+        await utils.answer(message, self.strings['receiving_modules'])
+
+        try:
+            mods = heta.repo.get_modules(repo=rep)
+        except requests.exceptions.MissingSchema:
+            return await utils.answer(message, self.strings['invalid_repo'])
+        if mods == "no modules":
+            return await utils.answer(message, self.strings['no_modules_in_repo'])
+        
+        mdsrepo = f"""
+<b>🖥 Модули из <a href="{rep}">этого</a> репозитория</b>
+
+"""
+        
+        for mod in mods:
+            mdsrepo += f"<i>{mod['name']}</i> (<i><a href='{mod['link']}'>ссылка</a></i>)\n"
+        
+        await utils.answer(message, mdsrepo)
