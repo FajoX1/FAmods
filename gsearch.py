@@ -40,7 +40,10 @@ class Gsearch(loader.Module):
 
         "searching": "<emoji document_id=5326015457155620929>🔄</emoji> <b>Поиск в google.com...</b>",
         "searched": """<b>
-<emoji document_id=5308054573938647180>🔍</emoji> Результаты поиска</b>{}
+<emoji document_id=5308054573938647180>🔎</emoji> Результаты поиска
+
+<emoji document_id=5188311512791393083>🔎</emoji> Запрос:</b> <code>{}</code>
+{}
 
 <i>{} результатов за {} сек</i>
 </b>""",
@@ -57,6 +60,7 @@ class Gsearch(loader.Module):
                 "safe_search",
                 False,
                 lambda: "Безопастный поиск",
+                validator=loader.validators.Boolean(),
             ),
             loader.ConfigValue(
                 "lang",
@@ -75,8 +79,9 @@ class Gsearch(loader.Module):
             ),
             loader.ConfigValue(
                 "show_title",
-                False,
-                lambda: "Заголовки в результате"
+                True,
+                lambda: "Заголовки в результате",
+                validator=loader.validators.Boolean()
             )
         )
 
@@ -133,4 +138,4 @@ class Gsearch(loader.Module):
         if count_s == 0:
             return await utils.answer(message, self.strings['no_result'])
 
-        return await utils.answer(message, self.strings['searched'].format(searched_result, count_s, execution_time))
+        return await utils.answer(message, self.strings['searched'].format(q, searched_result, count_s, execution_time))
