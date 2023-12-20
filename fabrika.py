@@ -13,6 +13,8 @@
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/fabrika.png?raw=true
 # ---------------------------------------------------------------------------------
 
+import hikkatl
+
 import random
 import asyncio
 import logging
@@ -63,6 +65,8 @@ class Fabrika(loader.Module):
             logger.error("Can't join @famods")
 
     async def _slavesw(self):
+     while True:
+      try:
         async with self._client.conversation("@fabrika") as conv:
             msg = await conv.send_message("/factory")
             await msg.delete()
@@ -72,8 +76,13 @@ class Fabrika(loader.Module):
             r = await conv.get_edit()
             await r.click(0)
             await r.delete()
+            break
+      except hikkatl.errors.common.AlreadyInConversationError:
+          await asyncio.sleep(5.67)
 
     async def _teamw(self):
+     while True:
+      try:
         async with self._client.conversation("@fabrika") as conv:
             msg = await conv.send_message("/start")
             await msg.delete()
@@ -87,8 +96,13 @@ class Fabrika(loader.Module):
             await asyncio.sleep(3.61)
             await r.click(0)
             await r.delete()
+            break
+      except hikkatl.errors.common.AlreadyInConversationError:
+          await asyncio.sleep(5.67)
 
     async def _takebonus(self):
+     while True:
+      try:
         async with self._client.conversation("@fabrika") as conv:
             msg = await conv.send_message("/city")
             await msg.delete()
@@ -98,6 +112,9 @@ class Fabrika(loader.Module):
             r = await conv.get_edit()
             await r.click(0)
             await r.delete()
+            break
+      except hikkatl.errors.common.AlreadyInConversationError:
+          await asyncio.sleep(5.67)
 
     @loader.command()
     async def rwon(self, message):
