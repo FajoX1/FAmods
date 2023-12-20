@@ -218,7 +218,7 @@ class Fabrika(loader.Module):
         if chat != 6520131495:
             return
         
-        if all(keyword in event.raw_text for keyword in ["Ваши рабочие", "законч", "работу"]):
+        if all(keyword in event.raw_text for keyword in ["Ваши рабоч", "законч", "работу"]):
           if self.db.get(self.name, "slaves_w", False):
             await self._slavesw()
         if "Командная работа завершена!" in event.raw_text:
