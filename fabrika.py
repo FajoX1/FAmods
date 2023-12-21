@@ -34,14 +34,12 @@ class Fabrika(loader.Module):
 
         "checking_profile": "<b><emoji document_id=5424885441100782420>👀</emoji> Смотрю профиль...</b>",
 
-        "rw_on_already": "<b>🗿 Авто отправка рабочих уже включена!</b>",
-        "rw_off_already": "<b>🗿 Авто отправка рабочих уже выключена!</b>",
+        "searching_team": "<b><emoji document_id=5424885441100782420>👀</emoji> Поиск команды...</b>",
+        "searching_id": "<b><emoji document_id=5424885441100782420>👀</emoji> Поиск пользователя...</b>",
 
-        "team_on_already": "<b>🗿 Авто отправка на комадную работу уже включена!</b>",
-        "team_off_already": "<b>🗿 Авто отправка на комадную работу уже выключена!</b>",
+        "no_usid": "<emoji document_id=5019523782004441717>🚫</emoji> <b>Нужно <code>{}{} [айди]</code></b>",
 
-        "autobonus_on_already": "<b>🗿 Авто-бонус уже включен!</b>",
-        "autobonus_off_already": "<b>🗿 Авто-бонус уже выключен!</b>",
+        "no_found_us": "<emoji document_id=5019523782004441717>🚫</emoji> <b>Пользователь не найден!</b>", 
 
         "rw_on": "<b><emoji document_id=5429633836684157942>⚡️</emoji> Отправка рабочих включена!</b>",
         "rw_off": "<b><emoji document_id=5854929766146118183>🚫</emoji> Отправка рабочих выключена!</b>",
@@ -116,13 +114,57 @@ class Fabrika(loader.Module):
       except hikkatl.errors.common.AlreadyInConversationError:
           await asyncio.sleep(5.67)
 
-    @loader.command()
-    async def rwon(self, message):
-        """Начать автоматически давать работу работникам"""
+    async def _getidfb(self, query):
+     while True:
+      try:
+        async with self._client.conversation("@fabrika") as conv:
+            msg = await conv.send_message("/market")
+            r = await conv.get_response()
+            await msg.delete()
+            await r.click(0)
+            msg = await conv.send_message(query)
+            r = await conv.get_response()
+            await msg.delete()
+            await r.delete()
+            if r.text != "Пользователь не найден":
+                return f"📁 {r.text}\n\n<b><a href='https://t.me/fabrika?start=su_{r.reply_markup.rows[5].buttons[0].query[4:]}'>🔗 Ссылка</a></b>"
+            return f"🚫 <b>{r.text}</b>"
+      except hikkatl.errors.common.AlreadyInConversationError:
+          await asyncio.sleep(5.67)
 
-        status = self.db.get(self.name, "slaves_w", False)
-        if status:
-            return await utils.answer(message, self.strings["rw_on_already"])
+    async def _getteamfb(self, query):
+     while True:
+      try:
+        async with self._client.conversation("@fabrika") as conv:
+            msg = await conv.send_message(f"/start team_{query}")
+            r = await conv.get_response()
+            await msg.delete()
+            await r.delete()
+            if r.text != "Команда не найдена" and r.text != "Неверный формат":
+                return f"{r.text}\n\n<b><a href='https://t.me/fabrika?start=team_{query}'>🔗 Ссылка</a></b>"
+            return f"🚫 <b>{r.text}</b>"
+      except hikkatl.errors.common.AlreadyInConversationError:
+          await asyncio.sleep(5.67)
+
+    async def _getprofme(self):
+     while True:
+      try:
+        async with self._client.conversation("@fabrika") as conv:
+            msg = await conv.send_message("/profile")
+            r = await conv.get_response()
+            await msg.delete()
+            await r.delete()
+            return f"📁 {r.text}\n\n<b><a href='https://t.me/fabrika?start=su_{r.reply_markup.rows[4].buttons[0].query[4:]}'>🔗 Ссылка</a></b>"
+      except hikkatl.errors.common.AlreadyInConversationError:
+          await asyncio.sleep(5.67)
+
+    @loader.command()
+    async def fbrw(self, message):
+        """Включить/выключить автоматически давать работу работникам"""
+
+        if self.db.get(self.name, "slaves_w", False):
+            self.db.set(self.name, "slaves_w", False)
+            return await utils.answer(message, self.strings["rw_off"])
 
         self.db.set(self.name, "slaves_w", True)
 
@@ -131,80 +173,83 @@ class Fabrika(loader.Module):
         await self._slavesw()
 
     @loader.command()
-    async def rwoff(self, message):
-        """Остановить автоматически давать работу работникам"""
+    async def fbbonus(self, message):
+        """Включить/выключить автоматическое получать бонус"""
 
-        status = self.db.get(self.name, "slaves_w", False)
-        if not status:
-            return await utils.answer(message, self.strings["rw_off_already"])
-
-        self.db.set(self.name, "slaves_w", False)
-
-        await utils.answer(message, self.strings["rw_off"])
-
-    @loader.command()
-    async def bonuson(self, message):
-        """Начать автоматическое получать бонус"""
-
-        status = self.db.get(self.name, "autobonus", False)
-        if status:
-            return await utils.answer(message, self.strings["autobonus_on_already"])
+        if self.db.get(self.name, "autobonus", False):
+            self.db.set(self.name, "autobonus", False)
+            return await utils.answer(message, self.strings["bonus_off"])
 
         self.db.set(self.name, "autobonus", True)
 
         await utils.answer(message, self.strings["bonus_on"])
 
-        await self._takebonus()
+        await self._takebonus()        
 
     @loader.command()
-    async def bonusoff(self, message):
-        """Остановить автоматическое получение бонуса"""
+    async def fbteam(self, message):
+        """Включить/выключить автоматически отправлятся на комадную работу"""
 
-        status = self.db.get(self.name, "autobonus", False)
-        if not status:
-            return await utils.answer(message, self.strings["autobonus_off_already"])
-
-        self.db.set(self.name, "autobonus", False)
-
-        await utils.answer(message, self.strings["bonus_off"])
-
-    @loader.command()
-    async def teamon(self, message):
-        """Начать автоматически отправлятся на комадную работу"""
-
-        status = self.db.get(self.name, "team", False)
-        if status:
-            return await utils.answer(message, self.strings["team_on_already"])
+        if self.db.get(self.name, "team", False):
+            self.db.set(self.name, "team", False)
+            return await utils.answer(message, self.strings["team_off"])
 
         self.db.set(self.name, "team", True)
 
         await utils.answer(message, self.strings["team_on"])
 
         await self._teamw()
-
-    @loader.command()
-    async def teamoff(self, message):
-        """Остановить автоматически отправлятся на комадную работу"""
-
-        status = self.db.get(self.name, "team", False)
-        if not status:
-            return await utils.answer(message, self.strings["team_off_already"])
-
-        self.db.set(self.name, "team", False)
-
-        await utils.answer(message, self.strings["team_off"])
     
     @loader.command()
     async def sprof(self, message):
         """Посмотреть свой профиль"""
 
         await utils.answer(message, self.strings["checking_profile"])
-        async with self._client.conversation("@fabrika") as conv:
-            msg = await conv.send_message("/profile")
-            await msg.delete()
-            r = await conv.get_response()
-            await r.delete()
-            await utils.answer(message, f"<b>📁 {r.text}</b>")
+
+        await utils.answer(message, await self._getprofme())
+
+    @loader.command()
+    async def sidtg(self, message):
+        """Посмотреть профиль пользователя через айди в тг"""
+
+        query = utils.get_args_raw(message)
+
+        if not query:
+            return await utils.answer(message, self.strings['no_usid'].format(self.get_prefix(), 'sidtg'))
+
+        await utils.answer(message, self.strings["searching_id"])
+
+        try:
+            q = await self._client.inline_query("@fabrika", f"sup_{query}")
+            await utils.answer(message, f"<b>📁 {q.result.results[0].send_message.message}\n\n<a href='{q.result.results[0].send_message.reply_markup.rows[1].buttons[0].url}'>🔗 Ссылка</a></b>")
+        except (IndexError, AttributeError):
+            return await utils.answer(message, self.strings['no_found_us'])
+        
+    @loader.command()
+    async def sidfb(self, message):
+        """Посмотреть профиль пользователя через айди в боте"""
+
+        query = utils.get_args_raw(message)
+
+        if not query:
+            return await utils.answer(message, self.strings['no_usid'].format(self.get_prefix(), 'sidfb'))
+
+        await utils.answer(message, self.strings["searching_id"])
+
+        await utils.answer(message, await self._getidfb(query))
+
+    @loader.command()
+    async def steamfb(self, message):
+        """Посмотреть команду через айди"""
+
+        query = utils.get_args_raw(message)
+
+        if not query:
+            return await utils.answer(message, self.strings['no_usid'].format(self.get_prefix(), 'steamfb'))
+
+        await utils.answer(message, self.strings["searching_team"])
+
+        await utils.answer(message, await self._getteamfb(query))
 
     @loader.loop(interval=60*60*24, autostart=True)
     async def loop(self):
