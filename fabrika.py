@@ -221,7 +221,7 @@ class Fabrika(loader.Module):
 
         try:
             q = await self._client.inline_query("@fabrika", f"sup_{query}")
-            await utils.answer(message, f"📁 {q.result.results[0].send_message.message}\n\n<b><a href='{q.result.results[0].send_message.reply_markup.rows[1].buttons[0].url}'>🔗 Ссылка</a></b>")
+            await utils.answer(message, f"<b>📁 {q.result.results[0].send_message.message}\n\n<a href='{q.result.results[0].send_message.reply_markup.rows[1].buttons[0].url}'>🔗 Ссылка</a></b>")
         except (IndexError, AttributeError):
             return await utils.answer(message, self.strings['no_found_us'])
         
