@@ -67,13 +67,12 @@ class Fabrika(loader.Module):
       try:
         async with self._client.conversation("@fabrika") as conv:
             msg = await conv.send_message("/factory")
-            await msg.delete()
-
             r = await conv.get_response()
             await r.click(1)
             r = await conv.get_edit()
             await r.click(0)
             await r.delete()
+            await msg.delete()
             break
       except hikkatl.errors.common.AlreadyInConversationError:
           await asyncio.sleep(5.67)
@@ -83,8 +82,6 @@ class Fabrika(loader.Module):
       try:
         async with self._client.conversation("@fabrika") as conv:
             msg = await conv.send_message("/start")
-            await msg.delete()
-
             r = await conv.get_response()
             await r.click(5)
             r = await conv.get_edit()
@@ -94,6 +91,7 @@ class Fabrika(loader.Module):
             await asyncio.sleep(3.61)
             await r.click(0)
             await r.delete()
+            await msg.delete()
             break
       except hikkatl.errors.common.AlreadyInConversationError:
           await asyncio.sleep(5.67)
@@ -103,13 +101,12 @@ class Fabrika(loader.Module):
       try:
         async with self._client.conversation("@fabrika") as conv:
             msg = await conv.send_message("/city")
-            await msg.delete()
-
             r = await conv.get_response()
             await r.click(1)
             r = await conv.get_edit()
             await r.click(0)
             await r.delete()
+            await msg.delete()
             break
       except hikkatl.errors.common.AlreadyInConversationError:
           await asyncio.sleep(5.67)
@@ -120,12 +117,12 @@ class Fabrika(loader.Module):
         async with self._client.conversation("@fabrika") as conv:
             msg = await conv.send_message("/market")
             r = await conv.get_response()
-            await msg.delete()
             await r.click(0)
             msg = await conv.send_message(query)
             r = await conv.get_response()
             await msg.delete()
             await r.delete()
+            await msg.delete()
             if r.text != "Пользователь не найден":
                 return f"📁 {r.text}\n\n<b><a href='https://t.me/fabrika?start=su_{r.reply_markup.rows[5].buttons[0].query[4:]}'>🔗 Ссылка</a></b>"
             return f"🚫 <b>{r.text}</b>"
@@ -138,8 +135,8 @@ class Fabrika(loader.Module):
         async with self._client.conversation("@fabrika") as conv:
             msg = await conv.send_message(f"/start team_{query}")
             r = await conv.get_response()
-            await msg.delete()
             await r.delete()
+            await msg.delete()
             if r.text != "Команда не найдена" and r.text != "Неверный формат":
                 return f"{r.text}\n\n<b><a href='https://t.me/fabrika?start=team_{query}'>🔗 Ссылка</a></b>"
             return f"🚫 <b>{r.text}</b>"
