@@ -116,7 +116,7 @@ class PriceFreedom(loader.Module):
 
     @loader.command()
     async def pfpromo(self, message):
-        """Включить/выключить автоматически активирование бонуса"""
+        """Включить/выключить автоматически активирование промокода"""
 
         if self.db.get(self.name, "promo_s", False):
             self.db.set(self.name, "promo_s", False)
