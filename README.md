@@ -6,8 +6,6 @@
 
 ## ⬇️ Установка
 
-</div>
-
 ### Обычная установка в Hikka
 <pre><code>.dlmod https://raw.githubusercontent.com/FajoX1/FAmods/main/<b><i>{название_модуля}</i></b>.py</code></pre>
 <hr>
@@ -33,3 +31,5 @@
 <hr>
 
 ### ✈️ <a href="https://t.me/famods">Канал</a> | <a href="https://t.me/FaModsChat">Чат</a> | <a href="https://t.me/fajox">Разработчик</a> 
+
+</div>
