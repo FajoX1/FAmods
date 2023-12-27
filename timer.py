@@ -13,6 +13,7 @@
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/timer.png?raw=true
 # ---------------------------------------------------------------------------------
 
+import pytz
 import logging
 from datetime import datetime
 
@@ -31,7 +32,8 @@ class Timer(loader.Module):
 
         "no_date": "<b><emoji document_id=5019523782004441717>❌</emoji> Добавь сначала дату в <code>{}cfg timer</code></b>",
 
-        "invalid_date": "<b><emoji document_id=5019523782004441717>❌</emoji> Неверный формат даты и времени в конфиге.</b>"
+        "invalid_date": "<b><emoji document_id=5019523782004441717>❌</emoji> Неверный формат даты и времени в конфиге.</b>",
+        "invalid_timezone": "<b><emoji document_id=5019523782004441717>❌</emoji> Неверный часовой пояс.</b>"
     }
 
     def __init__(self):
@@ -45,6 +47,11 @@ class Timer(loader.Module):
                 "date",
                 None,
                 lambda: "Дата до которой нужно считать. Пример: 25.04.2025 17:05",
+            ),
+            loader.ConfigValue(
+                "timezone",
+                "auto",
+                lambda: "Часовой пояс, по стандарту автоматически. Пример: Europe/Moscow",
             ),
         )
 
@@ -64,9 +71,10 @@ class Timer(loader.Module):
         """Посмотреть сколько осталось времени"""
 
         if not self.config["date"]:
-            return await utils.answer(message, 'Дата не указана.')
+            return await utils.answer(message, self.strings['no_date'])
 
         date_time_str = self.config['date']
+        timezone = self.config.get('timezone', 'auto')
 
         try:
             date_str, time_str = date_time_str.split(' ')
@@ -77,29 +85,36 @@ class Timer(loader.Module):
         hour, minute = map(int, time_str.split(":"))
 
         now = datetime.now()
-        event_time = datetime(year, month, day, hour, minute)
 
-        if now > event_time:
+        if timezone == 'auto':
+            event_time = datetime(year, month, day, hour, minute)
+        else:
+            try:
+                user_timezone = pytz.timezone(timezone)
+                event_time = user_timezone.localize(datetime(year, month, day, hour, minute))
+            except pytz.UnknownTimeZoneError:
+                return await utils.answer(message, self.strings['invalid_timezone'])
+
+        if now > event_time.replace(tzinfo=None):
             event_time = datetime(now.year + 1, month, day, hour, minute)
+            if timezone != 'auto':
+                event_time = user_timezone.localize(event_time)
+
+        if timezone != 'auto' and now.tzinfo != event_time.tzinfo:
+            now = now.astimezone(user_timezone)
 
         time_to_event = abs(event_time - now)
         days = time_to_event.days
-        years = now.year - event_time.year - 1 if now < event_time.replace(year=now.year) else now.year - event_time.year
+
+        years = days // 365
+        days %= 365
 
         hours, remainder = divmod(time_to_event.seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
 
-        years = 0
-        yearss = days / 365
-
         time_to = ""
 
-        if yearss > 1 or yearss == 1:
-            while True:
-                if days < 365:
-                    break
-                years += 1
-                days -= 365
+        if years > 0:
             time_to += f"{years} {'год' if years == 1 else 'года' if 1 < years < 5 else 'лет'} "
 
         time_to += f"{days} дней {hours} часов {minutes} минут {seconds} секунд"
