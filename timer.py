@@ -71,7 +71,7 @@ class Timer(loader.Module):
         """Посмотреть сколько осталось времени"""
 
         if not self.config["date"]:
-            return await utils.answer(message, self.strings['no_date'])
+            return await utils.answer(message, self.strings['no_date'].format(self.get_prefix()))
 
         date_time_str = self.config['date']
         timezone = self.config.get('timezone', 'auto')
