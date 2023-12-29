@@ -11,9 +11,9 @@
 <hr>
 
 ### Установка репозитория
-> Установить репозиторий
+> <i>Установить репозиторий</i>
 <pre><code>.addrepo https://github.com/FajoX1/FAmods/raw/main</code></pre>
-> Установка модуля
+> <i>Установка модуля</i>
 <pre><code>.dlmod <b><i>{название_модуля}</i></b></code></pre>
 
 <div align="center">
