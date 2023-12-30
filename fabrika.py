@@ -62,6 +62,12 @@ class Fabrika(loader.Module):
         except Exception:
             logger.error("Can't join @famods")
 
+        if self.db.get(self.name, "slaves_w", False):
+           asyncio.create_task(self._slavesw())
+
+        if self.db.get(self.name, "team", False):
+           asyncio.create_task(self._teamw())
+
     async def _slavesw(self):
      while True:
       try:
@@ -251,8 +257,8 @@ class Fabrika(loader.Module):
     @loader.loop(interval=60*60*24, autostart=True)
     async def loop(self):
       if self.db.get(self.name, "autobonus", False):
-        await asyncio.sleep(random.randint(65, 90))
         await self._takebonus()
+        await asyncio.sleep(random.randint(65, 90))
 
     async def watcher(self, event):
         chat = utils.get_chat_id(event)
