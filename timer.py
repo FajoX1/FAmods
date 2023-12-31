@@ -36,12 +36,25 @@ class Timer(loader.Module):
         "invalid_timezone": "<b><emoji document_id=5019523782004441717>❌</emoji> Неверный часовой пояс.</b>"
     }
 
+    time_units = [
+            ('год', 'года', 'лет'),
+            ('день', 'дня', 'дней'),
+            ('час', 'часа', 'часов'),
+            ('минута', 'минуты', 'минут'),
+            ('секунда', 'секунды', 'секунд')
+    ]
+
     def __init__(self):
         self.config = loader.ModuleConfig(
             loader.ConfigValue(
                 "text",
                 "<b>🕑 Осталось до этого ещё {time}</b>",
                 lambda: "Текст который будет отображаться с датой. (Можно использовать HTML-разметку) Пример: 🕑 Осталось до этого ещё {time}",
+            ),
+            loader.ConfigValue(
+                "text_already",
+                "<b>✅ Это уже случилось {time} назад</b>",
+                lambda: "Текст который будет если событие уже случилось.",
             ),
             loader.ConfigValue(
                 "date",
@@ -91,19 +104,16 @@ class Timer(loader.Module):
         else:
             try:
                 user_timezone = pytz.timezone(timezone)
-                event_time = user_timezone.localize(datetime(year, month, day, hour, minute))
+                event_time = user_timezone.localize(datetime(year, month, day, hour, minute), is_dst=None)
             except pytz.UnknownTimeZoneError:
                 return await utils.answer(message, self.strings['invalid_timezone'])
 
-        if now > event_time.replace(tzinfo=None):
-            event_time = datetime(now.year + 1, month, day, hour, minute)
-            if timezone != 'auto':
-                event_time = user_timezone.localize(event_time)
-
-        if timezone != 'auto' and now.tzinfo != event_time.tzinfo:
+        if timezone != 'auto':
             now = now.astimezone(user_timezone)
 
-        time_to_event = abs(event_time - now)
+        was_t = now > event_time if timezone == 'auto' else now > event_time.astimezone(user_timezone)
+
+        time_to_event = abs(now - event_time if timezone == 'auto' else now - event_time.astimezone(user_timezone))
         days = time_to_event.days
 
         years = days // 365
@@ -112,14 +122,21 @@ class Timer(loader.Module):
         hours, remainder = divmod(time_to_event.seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
 
+        time_values = [years, days, hours, minutes, seconds]
         time_to = ""
 
-        if years > 0:
-            time_to += f"{years} {'год' if years == 1 else 'года' if 1 < years < 5 else 'лет'} "
+        for value, (singular, genitive, plural) in zip(time_values, self.time_units):
+            if value > 0:
+                form = singular if value == 1 else genitive if 1 < value < 5 else plural
+                time_to += f"{value} {form} "
 
-        time_to += f"{days} дней {hours} часов {minutes} минут {seconds} секунд"
+        if time_to and not was_t:
+            return await utils.answer(
+                message,
+                self.config["text"].format(time=time_to),
+            )
 
-        await utils.answer(
+        return await utils.answer(
             message,
-            self.config["text"].format(time=time_to),
+            self.config["text_already"],
         )
