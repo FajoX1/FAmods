@@ -129,6 +129,7 @@ class Timer(loader.Module):
             if value > 0:
                 form = singular if value == 1 else genitive if 1 < value < 5 else plural
                 time_to += f"{value} {form} "
+        time_to = time_to.rstrip()
 
         if time_to and not was_t:
             return await utils.answer(
