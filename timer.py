@@ -54,7 +54,7 @@ class Timer(loader.Module):
             loader.ConfigValue(
                 "text_already",
                 "<b>✅ Это уже случилось {time} назад</b>",
-                lambda: "Текст который будет если событие уже случилось.",
+                lambda: "Текст который будет если событие уже случилось. Пример: ✅ Это уже случилось {time} назад",
             ),
             loader.ConfigValue(
                 "date",
@@ -138,5 +138,5 @@ class Timer(loader.Module):
 
         return await utils.answer(
             message,
-            self.config["text_already"],
+            self.config["text_already"].format(time=time_to),
         )
