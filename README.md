@@ -26,7 +26,7 @@
 > <b>https://www.gnu.org/licenses/agpl-3.0.html</b>
 
 ## ❓ Нашёл баг?
-> <b><a href="https://t.me/fajox">Писать сюда</a></b>
+> <b><a href="https://t.me/vecax">Писать сюда</a></b>
 
 <hr>
 
