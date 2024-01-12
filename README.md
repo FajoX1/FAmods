@@ -6,6 +6,8 @@
 
 ## ⬇️ Установка
 
+<img src="https://user-images.githubusercontent.com/36935426/167272288-85f00779-4b98-47da-8d0d-ea2c6370b979.png" height="40"></a>
+
 ### Обычная установка в Hikka
 <pre><code>.dlmod https://raw.githubusercontent.com/FajoX1/FAmods/main/<b><i>{название_модуля}</i></b>.py</code></pre>
 <hr>
