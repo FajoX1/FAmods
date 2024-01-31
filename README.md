@@ -6,8 +6,6 @@
 
 ## ⬇️ Установка
 
-<a href="https://t.me/fahost_bot"><img src="https://raw.githubusercontent.com/FajoX1/FAmods/main/assets/fahost_install.png" height="40"></a>
-
 ### Обычная установка в Hikka
 <pre><code>.dlmod https://raw.githubusercontent.com/FajoX1/FAmods/main/<b><i>{название_модуля}</i></b>.py</code></pre>
 <hr>
