@@ -30,6 +30,6 @@
 
 <hr>
 
-### ✈️ <a href="https://t.me/famods">Канал</a> | <a href="https://t.me/FaModsChat">Чат</a> | <a href="https://t.me/fajox">Разработчик</a> 
+### ✈️ <a href="https://t.me/famods">Канал</a> | <a href="https://t.me/FaModsChat">Чат</a> | <a href="https://t.me/vecax">Разработчик</a> 
 
 </div>
