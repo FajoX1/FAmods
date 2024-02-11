@@ -16,3 +16,4 @@ hetalib
 phoneinfo
 checkhost
 pricefreedom
+autogh
