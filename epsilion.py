@@ -113,7 +113,7 @@ class Epsilion(loader.Module):
                 if not "блокировать?" in r.text:
                     if "Тебе не повезло" in r.text:
                         await conv.send_message("💀 Принять участь")
-                    else:
+                    if "Ты победил" in r.text:
                         await conv.send_message("✅ Забрать нaграду")
                     self.cont = False
                     return
