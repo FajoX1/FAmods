@@ -48,6 +48,11 @@ class Epsilion(loader.Module):
                 "☘️ Фермерские угодья",
                 lambda: "Локация в которую ты по стандарту будешь отправляться. Пример: ☘️ Фермерские угодья",
             ),
+            loader.ConfigValue(
+                "start_message",
+                "💖 Ваше здоровье полностью восстановлено",
+                lambda: "Сообщение от бота после которого начинается бой",
+            ),
         )
 
     async def client_ready(self, client, db):
@@ -105,9 +110,8 @@ class Epsilion(loader.Module):
                 pr = []
                 for b in r.reply_markup.rows:
                    for bu in b.buttons:
-                    if not "Сбежать" in bu.text and not "Пропустить" in bu.text:
+                    if all(x not in bu.text for x in ("Сбежать", "Пропустить", "(", ")", "[", "]")):
                         pr.append(bu.text)
-                logger.info(pr)
                 msg = await conv.send_message(random.choice(pr))
                 r = await conv.get_response()
                 if not "блокировать?" in r.text:
@@ -121,7 +125,7 @@ class Epsilion(loader.Module):
                 pr = []
                 for b in r.reply_markup.rows:
                    for bu in b.buttons:
-                    if not "Сбежать" in bu.text and not "Пропустить" in bu.text:
+                    if all(x not in bu.text for x in ("Сбежать", "Пропустить", "(", ")", "[", "]")):
                         pr.append(bu.text)
                 msg = await conv.send_message(random.choice(pr))
                 r = await conv.get_response()
@@ -210,7 +214,7 @@ class Epsilion(loader.Module):
         if chat != 776510403:
             return
         
-        if event.raw_text == "💖 Ваше здоровье полностью восстановлено":
+        if event.raw_text == self.config['start_message']:
             if self.db.get(self.name, "battle", False):
                 await asyncio.sleep(random.randint(3, 5))
                 asyncio.create_task(await self._battle())
