@@ -110,7 +110,7 @@ class Epsilion(loader.Module):
                 pr = []
                 for b in r.reply_markup.rows:
                    for bu in b.buttons:
-                    if all(x not in bu.text for x in ("Сбежать", "Пропустить", "(", ")", "[", "]")):
+                    if all(x not in bu.text for x in ["Сбежать", "Пропустить", "(", ")", "[", "]"]):
                         pr.append(bu.text)
                 msg = await conv.send_message(random.choice(pr))
                 r = await conv.get_response()
@@ -125,7 +125,7 @@ class Epsilion(loader.Module):
                 pr = []
                 for b in r.reply_markup.rows:
                    for bu in b.buttons:
-                    if all(x not in bu.text for x in ("Сбежать", "Пропустить", "(", ")", "[", "]")):
+                    if all(x not in bu.text for x in ["Сбежать", "Пропустить", "(", ")", "[", "]"]):
                         pr.append(bu.text)
                 msg = await conv.send_message(random.choice(pr))
                 r = await conv.get_response()
