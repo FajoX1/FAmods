@@ -53,9 +53,25 @@ class AutoGH(loader.Module):
                 lambda: "Репозиторий для авто-коммитов. Пример: FajoX1/FAmods",
             ),
             loader.ConfigValue(
+                "file_name",
+                "autocommit.txt",
+                lambda: "Файл для авто-коммита",
+            ),
+            loader.ConfigValue(
+                "commit_name",
+                "AutoCommit",
+                lambda: "Название коммита",
+            ),
+            loader.ConfigValue(
                 "time_autocommit",
                 3600,
                 lambda: "Через сколько секунд сделать следущий коммит",
+            ),
+            loader.ConfigValue(
+                "log",
+                True,
+                lambda: "Логи о том что сделали/не получилось сделать коммит",
+                validator=loader.validators.Boolean(),
             ),
         )
 
@@ -78,14 +94,18 @@ class AutoGH(loader.Module):
             try:
                 g = Github(self.config['API_TOKEN'])
                 repo = g.get_repo(self.config['REPO'])
-                file_name = f'autocommit.txt'
                 file_content = f'Commit at {datetime.now()}'
-                contents = repo.get_contents(file_name)
-                sha = contents.sha
-                repo.update_file(file_name, "AutoCommit", file_content, sha)
-                logger.info("Auto commited")
+                try:
+                    contents = repo.get_contents(self.config['file_name'])
+                    sha = contents.sha
+                    repo.update_file(self.config['file_name'], self.config['commit_name'], file_content, sha)
+                except:
+                    repo.create_file(self.config['file_name'], self.config['commit_name'], file_content)
+                if self.config['log']:
+                    logger.info("Auto commited")
             except Exception as e:
-                logger.error(f"Can't commit:\n{e}")
+                if self.config['log']:
+                    logger.error(f"Can't commit:\n{e}")
         
         await asyncio.sleep(self.config['time_autocommit'])
 
