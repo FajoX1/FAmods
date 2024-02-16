@@ -157,9 +157,7 @@ class Epsilion(loader.Module):
             r = await conv.get_response()
             await msg.delete()
             await r.delete()
-            return f"<b>📁 Профиль</b>
-
-{r.text}"
+            return f"<b>📁 Профиль</b>\n\n{r.text}"
       except hikkatl.errors.common.AlreadyInConversationError:
           await asyncio.sleep(5.67)
 
