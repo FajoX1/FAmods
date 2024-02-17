@@ -93,7 +93,7 @@ class Epsilion(loader.Module):
                        return asyncio.create_task(self._battle())
                    
                 if full_health:
-                   if "💖 Ваше здоровье полностью восстановлено" == self.config['start_message']:
+                   if "💖 Ваше здоровье полностью восстановлено" in self.config['start_message']:
                       return asyncio.create_task(self._battle())
             return
       except hikkatl.errors.common.AlreadyInConversationError:
