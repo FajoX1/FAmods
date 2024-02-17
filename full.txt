@@ -17,3 +17,5 @@ phoneinfo
 checkhost
 pricefreedom
 autogh
+epsilion
+requirements
