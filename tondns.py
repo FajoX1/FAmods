@@ -56,7 +56,7 @@ class TonDNS(loader.Module):
         address = utils.get_args_raw(message)
 
         if not address:
-            return await utils.answer(message, f"<emoji document_id=5019523782004441717>❌</emoji> <b>Должно быть</b> <code>.itondns тон_домен</code>")
+            return await utils.answer(message, f"<emoji document_id=5019523782004441717>❌</emoji> <b>Должно быть</b> <code>{self.get_prefix()}itondns тон_домен</code>")
         
         await utils.answer(message, self.strings["waiting"])
 
