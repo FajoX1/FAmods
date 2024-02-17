@@ -15,7 +15,6 @@
 
 import hikkatl
 
-import re
 import random
 import asyncio
 import logging
@@ -70,33 +69,6 @@ class Epsilion(loader.Module):
         if self.db.get(self.name, "battle", False):
            asyncio.create_task(self._battle())
 
-    async def _check_hp(self):
-     while True:
-      try:
-        async with self._client.conversation("@EpsilionWarBot") as conv:
-            msg = await conv.send_message("/equip")
-            r = await conv.get_response()
-            await msg.delete()
-            await r.delete()
-            matches = re.search(r'\((\d+)/(\d+)\)', r.text)
-            if matches and self.db.get(self.name, "battle", False):
-                current_hp = int(matches.group(1))
-                max_hp = int(matches.group(2))
-
-                above_50_percent = (current_hp / max_hp) > 0.5
-                full_health = current_hp == max_hp
-
-                if above_50_percent:
-                    if "💖 Ваше здоровье восстановлено на 50%" in self.config['start_message']:
-                       return asyncio.create_task(self._battle())
-                   
-                if full_health:
-                   if "💖 Ваше здоровье полностью восстановлено" == self.config['start_message']:
-                      return asyncio.create_task(self._battle())
-            return
-      except hikkatl.errors.common.AlreadyInConversationError:
-          await asyncio.sleep(5.67)
-
     async def _change_location(self, conv, location):
      if location == "default":
         location = self.config['location']
@@ -148,7 +120,6 @@ class Epsilion(loader.Module):
                     if "Ты победил" in r.text:
                         await conv.send_message("✅ Забрать нaграду")
                     self.cont = False
-                    asyncio.create_task(self._check_hp())
                     return
                 await asyncio.sleep(3.54354353)
                 pr = []
