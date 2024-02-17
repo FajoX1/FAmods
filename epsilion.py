@@ -15,6 +15,7 @@
 
 import hikkatl
 
+import re
 import random
 import asyncio
 import logging
@@ -69,6 +70,35 @@ class Epsilion(loader.Module):
         if self.db.get(self.name, "battle", False):
            asyncio.create_task(self._battle())
 
+    async def _check_hp(self):
+     while True:
+      try:
+        async with self._client.conversation("@EpsilionWarBot") as conv:
+            msg = await conv.send_message("/equip")
+            r = await conv.get_response()
+            await msg.delete()
+            await r.delete()
+            matches = re.search(r'\((\d+)/(\d+)\)', r.text)
+            if matches and self.db.get(self.name, "battle", False):
+                current_hp = int(matches.group(1))
+                max_hp = int(matches.group(2))
+
+                above_50_percent = (current_hp / max_hp) > 0.5
+                full_health = current_hp == max_hp
+
+                await asyncio.sleep(3.66767665323)
+
+                if above_50_percent:
+                    if "💖 Ваше здоровье восстановлено на 50%" in self.config['start_message']:
+                       return asyncio.create_task(self._battle())
+                   
+                if full_health:
+                   if "💖 Ваше здоровье полностью восстановлено" == self.config['start_message']:
+                      return asyncio.create_task(self._battle())
+            return
+      except hikkatl.errors.common.AlreadyInConversationError:
+          await asyncio.sleep(5.67)
+
     async def _change_location(self, conv, location):
      if location == "default":
         location = self.config['location']
@@ -98,7 +128,7 @@ class Epsilion(loader.Module):
             await msg.delete()
             cavella = False
             cavella = True if not r.text == "🔭 Начался поиск противника" else False
-            if "❗️ Недостаточно здоровья для сражений" in r.text:
+            if "Недостаточно здоровья для сражений" in r.text:
                return
             if cavella:
                 await self._change_location(conv, "default")
@@ -120,6 +150,8 @@ class Epsilion(loader.Module):
                     if "Ты победил" in r.text:
                         await conv.send_message("✅ Забрать нaграду")
                     self.cont = False
+                    await asyncio.sleep(3.3222444435)
+                    asyncio.create_task(self._check_hp())
                     return
                 await asyncio.sleep(3.54354353)
                 pr = []
@@ -218,11 +250,3 @@ class Epsilion(loader.Module):
             if self.db.get(self.name, "battle", False):
                 await asyncio.sleep(random.randint(3, 5))
                 asyncio.create_task(await self._battle())
-
-        if all(keyword in event.raw_text for keyword in ["Тебя убил"]):
-            self.cont = False
-            await self._client.send_message(776510403, "💀 Принять участь")
-        
-        if all(keyword in event.raw_text for keyword in ["успел от тебя сбежать", "Ты победил", "убивает", "отправляешься в ближайший город на восстановление"]):
-            self.cont = False
-            await self._client.send_message(776510403, "✅ Забрать нaграду")
