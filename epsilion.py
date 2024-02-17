@@ -137,18 +137,30 @@ class Epsilion(loader.Module):
                 await msg.delete()
             while self.cont:
                 r = await conv.get_response()
+                if "сбежать" in r.text:
+                   await conv.send_message("В зону охоты")
+                   self.cont = False
+                   await asyncio.sleep(2.82323318089)
+                   asyncio.create_task(self._check_hp())
+                   return
+                if "Хотел встретить врага, но" in r.text:
+                   r = await conv.get_response()
                 pr = []
                 for b in r.reply_markup.rows:
                    for bu in b.buttons:
                     if all(x not in bu.text for x in ["Сбежать", "Пропустить", "(", ")", "[", "]"]):
                         pr.append(bu.text)
                 msg = await conv.send_message(random.choice(pr))
-                r = await conv.get_response()
+                r = await conv.get_response() 
                 if not "блокировать?" in r.text:
                     if "Тебе не повезло" in r.text:
                         await conv.send_message("💀 Принять участь")
                     if "Ты победил" in r.text:
                         await conv.send_message("✅ Забрать нaграду")
+                    if "сбежать" in r.text:
+                        await conv.send_message("В зону охоты")
+                    else:
+                       await conv.send_message("В город")
                     self.cont = False
                     await asyncio.sleep(3.3222444435)
                     asyncio.create_task(self._check_hp())
@@ -161,6 +173,12 @@ class Epsilion(loader.Module):
                         pr.append(bu.text)
                 msg = await conv.send_message(random.choice(pr))
                 r = await conv.get_response()
+                if "сбежать" in r.text:
+                   await conv.send_message("В зону охоты")
+                   self.cont = False
+                   await asyncio.sleep(2.82323318089)
+                   asyncio.create_task(self._check_hp())
+                   return
       except hikkatl.errors.common.AlreadyInConversationError:
           await asyncio.sleep(5.67)
 
