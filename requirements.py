@@ -70,7 +70,7 @@ class Requirements(loader.Module):
         r = await message.get_reply_message()
 
         if not link and not r:
-            return await utils.answer(message, self.strings['no_file_and_link'].format(self.get_prefix(), "dlsdep"))
+            return await utils.answer(message, self.strings['no_file_and_link'].format(self.get_prefix(), "dldeps"))
 
         await utils.answer(message, self.strings['search_deps'])
 
