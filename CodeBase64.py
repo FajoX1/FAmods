@@ -28,6 +28,9 @@ class CodeBase64(loader.Module):
 
     strings = {
         "name": "CodeBase64",
+
+        "only_base64": "<b><emoji document_id=5019523782004441717>🚫</emoji> Only base64</b>",
+
         "enc_txt": "<b><emoji document_id=6334316848741352906>⌨️</emoji> You encoded text into base64:</b>\n<code>{}</code>",
         "de_txt": "<b><emoji document_id=6334316848741352906>⌨️</emoji> You decoded text from base64:</b>\n<code>{}</code>",
     }
@@ -45,16 +48,19 @@ class CodeBase64(loader.Module):
 
     @loader.command()
     async def cbase64(self, message):
-        """Code into base64"""
+        """Кодирование в base64"""
         enc_bytes = base64.b64encode(utils.get_args_raw(message).encode('utf-8'))
-        enc_text = enc_bytes
+        enc_text = enc_bytes.decode('utf-8')  # Декодируем байты в строку
 
         await utils.answer(message, self.strings["enc_txt"].format(enc_text))
 
     @loader.command()
     async def dbase64(self, message):
-        """Decode base64"""
-        de_bytes = base64.b64decode(utils.get_args_raw(message))
-        de_text = de_bytes
+        """Декодирование из base64"""
+        try:
+            de_bytes = base64.b64decode(utils.get_args_raw(message))
+        except:
+            return await utils.answer(message, self.strings['only_base64'])
+        de_text = de_bytes.decode('utf-8')  # Декодируем байты в строку
 
         await utils.answer(message, self.strings["de_txt"].format(de_text))
