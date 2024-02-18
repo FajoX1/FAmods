@@ -11,11 +11,11 @@
 # Description: Создание статей и другое связанное с telegra.ph
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/telegrapher.png?raw=true
-# requires: telegraph
+# requires: aiohttp telegraph
 # ---------------------------------------------------------------------------------
 
 import logging
-import requests
+import aiohttp
 from telegraph import Telegraph
 
 from telethon import types
@@ -121,14 +121,15 @@ class Telegrapher(loader.Module):
 
         file_content = await message.client.download_media(media_data, bytes)
         telegraph_upload_url = "https://telegra.ph/upload"
-        files = {"file": ("file", file_content, None)}
+        form = aiohttp.FormData()
+        form.add_field('file', file_content, filename='file')
 
         try:
-            response = requests.post(telegraph_upload_url, files=files)
-            response.raise_for_status()
-            uploaded_data = response.json()
-            telegraph_link = "https://telegra.ph" + uploaded_data[0]["src"]
-        except requests.RequestException as e:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(telegraph_upload_url, data=form) as response:
+                    uploaded_data = await response.json()
+                    telegraph_link = "https://telegra.ph" + uploaded_data[0]["src"]
+        except aiohttp.ClientError as e:
             telegraph_link = f"Ошибка при загрузке файла: {e}"
 
         await utils.answer(message, self.strings['upload_ready'].format(telegraph_link))

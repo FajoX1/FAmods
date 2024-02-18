@@ -11,11 +11,11 @@
 # Description: Информация о TON адресе
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/tonscan.png?raw=true
-# requires: requests
+# requires: aiohttp
 # ---------------------------------------------------------------------------------
 
 import logging
-import requests
+import aiohttp
 from datetime import datetime
 
 from telethon.tl.functions.channels import JoinChannelRequest
@@ -55,7 +55,9 @@ class Tonscan(loader.Module):
         
         await utils.answer(message, self.strings["waiting"])
 
-        response = requests.get(f"https://tonapi.io/v2/accounts/{address}").json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://tonapi.io/v2/accounts/{address}") as res:
+               response = await res.json()
 
         try:
             response['icon']
@@ -113,7 +115,9 @@ class Tonscan(loader.Module):
         
         await utils.answer(message, self.strings["waiting"])
 
-        response = requests.get(f"https://tonapi.io/v2/jettons/{address}").json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://tonapi.io/v2/jettons/{address}") as res:
+               response = await res.json()
 
         try:
           response['error']
@@ -165,7 +169,9 @@ class Tonscan(loader.Module):
         
         await utils.answer(message, self.strings["waiting"])
 
-        response = requests.get(f"https://tonapi.io/v2/nfts/collections/{address}").json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://tonapi.io/v2/nfts/collections/{address}") as res:
+               response = await res.json()
 
         try:
           response['error']
@@ -230,7 +236,9 @@ class Tonscan(loader.Module):
         
         await utils.answer(message, self.strings["waiting"])
 
-        response = requests.get(f"https://tonapi.io/v2/nfts/{address}").json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://tonapi.io/v2/nfts/{address}") as res:
+               response = await res.json()
 
         try:
           response['error']

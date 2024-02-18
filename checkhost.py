@@ -11,11 +11,11 @@
 # Description: Проверка доступности веб-сайтов, серверов, хостов и IP-адресов с разных геолокаций и тд.
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/checkhost.png?raw=true
-# requires: requests
+# requires: aiohttp
 # ---------------------------------------------------------------------------------
 
 import asyncio
-import requests
+import aiohttp
 import logging
 
 from telethon.tl.functions.channels import JoinChannelRequest
@@ -78,9 +78,12 @@ class CheckHost(loader.Module):
         if self.config['limit']:
             url_cr += f"&max_nodes={self.config['limit_geo']}"
 
-        create = requests.get(url_cr, headers={'Accept': 'application/json'}).json()
-        await asyncio.sleep(10)
-        response = requests.get(f"https://check-host.net/check-result/{create['request_id']}", headers={'Accept': 'application/json'}).json()
+        async with aiohttp.ClientSession() as session:
+            cr = await session.get(url_cr, headers={'Accept': 'application/json'})
+            create = await cr.json()
+            await asyncio.sleep(10)
+            res = await session.get(f"https://check-host.net/check-result/{create['request_id']}", headers={'Accept': 'application/json'})
+            response = await res.json()
 
         txt = f"""<b>
 🌐 Проверка доступности

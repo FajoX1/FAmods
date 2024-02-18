@@ -11,11 +11,11 @@
 # Description: Модуль для работы с TON DNS
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/tondns.png?raw=true
-# requires: requests
+# requires: aiohttp
 # ---------------------------------------------------------------------------------
 
 import logging
-import requests
+import aiohttp
 from datetime import datetime
 
 from telethon.tl.functions.channels import JoinChannelRequest
@@ -60,7 +60,9 @@ class TonDNS(loader.Module):
         
         await utils.answer(message, self.strings["waiting"])
 
-        response = requests.get(f"https://tonapi.io/v2/dns/{address}").json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://tonapi.io/v2/dns/{address}") as res:
+               response = await res.json()
 
         try:
           response['error']

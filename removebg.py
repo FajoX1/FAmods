@@ -11,13 +11,15 @@
 # Description: Убрать фон из изображения
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/removebg.png?raw=true
-# requires: requests
+# requires: aiohttp
 # ---------------------------------------------------------------------------------
 
 import os
 import tempfile
 import logging
-import requests
+import aiohttp
+
+from aiohttp import FormData
 
 from telethon.tl.functions.channels import JoinChannelRequest
 
@@ -83,26 +85,32 @@ class RemoveBG(loader.Module):
 
         with tempfile.TemporaryDirectory() as temp_dir:
             try:
-               file_path = os.path.join(temp_dir, reply.file.name)
-               await reply.download_media(file_path)
+                file_path = os.path.join(temp_dir, reply.file.name)
+                await reply.download_media(file_path)
             except TypeError:
                 return await utils.answer(message, self.strings['must_be_forced'])
-            
+
             access_token = self.config["api_token"]
-            response = requests.post(
-                'https://api.remove.bg/v1.0/removebg',
-                files={'image_file': open(file_path, 'rb')},
-                data={'size': 'auto'},
-                headers={'X-Api-Key': access_token},
-            )
-            try:
-              if response.json()['errors'][0]['title'] == "API Key invalid":
-                return await utils.answer(message, self.strings['invalid_token'])
-            except:
-                pass
-            file_namee = f"famods-no-bg-{reply.file.name.replace('.jpg', '').replace('.png', '').replace('.jpeg', '')}.png"
-            with open(os.path.join(temp_dir, file_namee), 'wb') as out:
-               out.write(response.content)
-    
-            await message.client.send_file(message.chat_id, os.path.join(temp_dir,file_namee), force_document=True)
-            return await message.delete()
+            async with aiohttp.ClientSession() as session:
+                form_data = FormData()
+                form_data.add_field('image_file', open(file_path, 'rb'))
+                form_data.add_field('size', 'auto')
+
+                async with session.post(
+                    'https://api.remove.bg/v1.0/removebg',
+                    headers={'X-Api-Key': access_token},
+                    data=form_data
+                ) as res:
+                    try:
+                        response_json = await res.json()
+                        if 'errors' in response_json and response_json['errors'][0]['title'] == "API Key invalid":
+                            return await utils.answer(message, self.strings['invalid_token'])
+                    except Exception as e:
+                        print(f"Error processing response: {e}")
+
+                    file_name = f"famods-no-bg-{os.path.splitext(reply.file.name)[0]}.png"
+                    with open(os.path.join(temp_dir, file_name), 'wb') as out:
+                        out.write(await res.read())
+
+            await message.client.send_file(message.chat_id, os.path.join(temp_dir, file_name), force_document=True)
+            await message.delete()

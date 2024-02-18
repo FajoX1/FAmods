@@ -11,12 +11,12 @@
 # Description: Поиск в Google
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/gsearch.png?raw=true
-# requires: google
+# requires: aiohttp google
 # ---------------------------------------------------------------------------------
 
 import time
 import logging
-import requests
+import aiohttp
 
 from bs4 import BeautifulSoup
 from googlesearch import search
@@ -122,7 +122,9 @@ class Gsearch(loader.Module):
         for url in search(q, stop=self.config["results"], lang=self.config["safe_search"], safe=safe_s):
             if self.config['show_title']:
                 try:
-                  html = (requests.get(unquote(url), headers={"User-Agent": self.config['user_agent']})).content
+                  async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers={"User-Agent": self.config['user_agent']}) as response:
+                        html = await response.read()
                   soup = BeautifulSoup(html, 'html.parser')
                   title = soup.find('title').text
                   searched_result += f"\n{emojii} <i><a href='{unquote(url)}'>{title}</a></i>"
