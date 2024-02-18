@@ -16,6 +16,7 @@ hetalib
 phoneinfo
 checkhost
 pricefreedom
+ytsearch
 autogh
 epsilion
 requirements
