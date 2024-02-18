@@ -29,7 +29,7 @@ class CodeBase64(loader.Module):
     strings = {
         "name": "CodeBase64",
 
-        "only_base64": "<b><emoji document_id=5019523782004441717>🚫</emoji> Only base64</b>",
+        "only_base64": "<b><emoji document_id=5019523782004441717>🚫</emoji> Only <code>base64</code></b>",
 
         "enc_txt": "<b><emoji document_id=6334316848741352906>⌨️</emoji> You encoded text into base64:</b>\n<code>{}</code>",
         "de_txt": "<b><emoji document_id=6334316848741352906>⌨️</emoji> You decoded text from base64:</b>\n<code>{}</code>",
