@@ -20,3 +20,4 @@ ytsearch
 autogh
 epsilion
 requirements
+hbotcommand
