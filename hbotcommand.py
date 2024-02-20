@@ -38,7 +38,7 @@ class HbotCommand(loader.Module):
         self.config = loader.ModuleConfig(
             loader.ConfigValue(
                 "command_text",
-                "<b>Этот текст можно изменить в .cfg Hbot</b>",
+                "<b>Этот текст можно изменить в .cfg HbotCommand</b>",
                 lambda: "Текст сообщения",
             ),
             loader.ConfigValue(
