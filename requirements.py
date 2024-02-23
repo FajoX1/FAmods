@@ -11,7 +11,7 @@
 # Description: Работа с pip пакетами в модуле
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/requirements.png?raw=true
-# requires: aiohttp heta
+# requires: heta
 # ---------------------------------------------------------------------------------
 
 import re
@@ -19,7 +19,6 @@ import os
 import heta
 import shlex
 import asyncio
-import aiohttp
 import logging
 import tempfile
 
