@@ -21,3 +21,4 @@ autogh
 epsilion
 requirements
 hbotcommand
+chmodslist

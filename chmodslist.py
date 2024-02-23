@@ -13,11 +13,6 @@
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/chmodslist.png?raw=true
 # ---------------------------------------------------------------------------------
 
-import hikkatl
-
-import re
-import random
-import asyncio
 import logging
 
 from telethon.tl.functions.channels import JoinChannelRequest
