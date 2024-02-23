@@ -11,11 +11,12 @@
 # Description: Работа с pip пакетами в модуле
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/requirements.png?raw=true
-# requires: aiohttp
+# requires: aiohttp heta
 # ---------------------------------------------------------------------------------
 
 import re
 import os
+import heta
 import shlex
 import asyncio
 import aiohttp
@@ -36,9 +37,9 @@ class Requirements(loader.Module):
         "name": "Requirements",
 
         "no_dep": "<emoji document_id=5440381017384822513>❌</emoji> <b>В модуле нету зависимостей</b>",
-        "only_url": "<emoji document_id=5440381017384822513>❌</emoji> <b>Только ссылка на модуль</b>",
+        "only_url_or_hash": "<emoji document_id=5440381017384822513>❌</emoji> <b>Только ссылка на модуль, или heta hash</b>",
 
-        "no_file_and_link": "<emoji document_id=5440381017384822513>❌</emoji> <b>Нужно ответить на файл или <code>{}{} [ссылка]</code></b>",
+        "no_file_and_link": "<emoji document_id=5440381017384822513>❌</emoji> <b>Нужно ответить на файл или <code>{}{} [ссылка или heta hash]</code></b>",
 
         "search_deps": "<emoji document_id=6332573220868196043>🕓</emoji> <b>Ищу зависимости...</b>",
         "install_deps": "<emoji document_id=6332573220868196043>🕓</emoji> <b>Установка зависимостей:</b>\n\n<code>{}</code>",
@@ -74,13 +75,18 @@ class Requirements(loader.Module):
 
         await utils.answer(message, self.strings['search_deps'])
 
+        _heta = False
+
         if link:
             try:
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(link) as response:
-                        code = await response.text()
+                code = heta.module.get_code(link)
             except:
-                return await utils.answer(message, self.strings['only_url'])
+                try:
+                    m = heta.decode_hash(link)
+                    code = heta.module.get_code(m['link'])
+                    _heta = True
+                except:
+                    return await utils.answer(message, self.strings['only_url_or_hash'])
         else:
             with tempfile.TemporaryDirectory() as temp_dir:
                 file_path = os.path.join(temp_dir, r.file.name)
@@ -102,7 +108,7 @@ class Requirements(loader.Module):
         process = await asyncio.create_subprocess_exec('pip', 'install', *requirements_list)
         await process.wait()
 
-        return await utils.answer(message, self.strings['installed'].format(all_requires.replace(" ", "\n"), f"<b><emoji document_id=6334353510582191829>⬇️</emoji> Установите модуль:\n<code>{self.get_prefix()}dlmod {link}</code></b>" if link else f"<b><emoji document_id=6334353510582191829>⬇️</emoji> Установите модуль через <code>{self.get_prefix()}lm</code> (с ответом на файл модуля)</b>"))
+        return await utils.answer(message, self.strings['installed'].format(all_requires.replace(" ", "\n"), f"<b><emoji document_id=6334353510582191829>⬇️</emoji> Установите модуль:\n<code>{self.get_prefix()}{'dlh' if _heta else 'dlmod'} {link}</code></b>" if link else f"<b><emoji document_id=6334353510582191829>⬇️</emoji> Установите модуль через <code>{self.get_prefix()}lm</code> (с ответом на файл модуля)</b>"))
 
     @loader.command()
     async def uldeps(self, message):
@@ -119,11 +125,13 @@ class Requirements(loader.Module):
 
         if link:
             try:
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(link) as response:
-                        code = await response.text()
+                code = heta.module.get_code(link)
             except:
-                return await utils.answer(message, self.strings['only_url'])
+                try:
+                    m = heta.decode_hash(link)
+                    code = heta.module.get_code(m['link'])
+                except:
+                    return await utils.answer(message, self.strings['only_url_or_hash'])
         else:
             with tempfile.TemporaryDirectory() as temp_dir:
                 file_path = os.path.join(temp_dir, r.file.name)
@@ -162,11 +170,13 @@ class Requirements(loader.Module):
 
         if link:
             try:
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(link) as response:
-                        code = await response.text()
+                code = heta.module.get_code(link)
             except:
-                return await utils.answer(message, self.strings['only_url'])
+                try:
+                    m = heta.decode_hash(link)
+                    code = heta.module.get_code(m['link'])
+                except:
+                    return await utils.answer(message, self.strings['only_url_or_hash'])
         else:
             with tempfile.TemporaryDirectory() as temp_dir:
                 file_path = os.path.join(temp_dir, r.file.name)
