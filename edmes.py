@@ -58,11 +58,8 @@ class Edmes(loader.Module):
 
     @loader.command()
     async def edmsg(self, message):
-        """Редактирует"""
+        """Редактировать"""
 
-        texts = self.config["edit_texts"]
-        w_time = self.config["wait_to_edit"]
-
-        for txt in texts:
+        for txt in self.config["edit_texts"]:
             await utils.answer(message, txt)
-            await asyncio.sleep(w_time)
+            await asyncio.sleep(self.config["wait_to_edit"])
