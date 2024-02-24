@@ -22,3 +22,4 @@ epsilion
 requirements
 hbotcommand
 chmodslist
+xrocket
