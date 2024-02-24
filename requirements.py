@@ -50,6 +50,16 @@ class Requirements(loader.Module):
         "requirements": "<emoji document_id=5294080842006538030>⚙️</emoji> <b>Зависимости:</b>\n\n<code>{}</code>",
     }
 
+    def __init__(self):
+        self.config = loader.ModuleConfig(
+            loader.ConfigValue(
+                "auto_dlm",
+                False,
+                lambda: "Автоматическая загрузка модуля после установки зависимостей",
+                validator=loader.validators.Boolean()
+            ),
+        )
+
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
@@ -107,7 +117,18 @@ class Requirements(loader.Module):
         process = await asyncio.create_subprocess_exec('pip', 'install', *requirements_list)
         await process.wait()
 
-        return await utils.answer(message, self.strings['installed'].format(all_requires.replace(" ", "\n"), f"<b><emoji document_id=6334353510582191829>⬇️</emoji> Установите модуль:\n<code>{self.get_prefix()}{'dlh' if _heta else 'dlmod'} {link}</code></b>" if link else f"<b><emoji document_id=6334353510582191829>⬇️</emoji> Установите модуль через <code>{self.get_prefix()}lm</code> (с ответом на файл модуля)</b>"))
+        await utils.answer(message, self.strings['installed'].format(all_requires.replace(" ", "\n"), ((f"<b><emoji document_id=6334353510582191829>⬇️</emoji> Установите модуль:\n<code>{self.get_prefix()}{'dlh' if _heta else 'dlmod'} {link}</code></b>" if link else f"<b><emoji document_id=6334353510582191829>⬇️</emoji> Установите модуль через <code>{self.get_prefix()}lm</code> (с ответом на файл модуля)</b>") if not self.config['auto_dlm'] else "")))
+
+        if not self.config['auto_dlm']:
+            return
+        
+        if _heta:
+            return await self.invoke("dlh", link, message.peer_id)
+        if link:
+            return await self.invoke("dlmod", link, message.peer_id)
+        else:
+            rr = await r.reply("ㅤ")
+            return await self.invoke("loadmod", message=rr, edit=True)
 
     @loader.command()
     async def uldeps(self, message):
