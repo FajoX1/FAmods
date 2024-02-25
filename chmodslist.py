@@ -28,7 +28,7 @@ class CHmodsList(loader.Module):
     strings = {
         "name": "CHmodsList",
 
-        "opening_config": "<b><emoji document_id=5327902038720257153>🔄</emoji> Открываю настройку...</b>",
+        "opening_config": "<b><emoji document_id=5327902038720257153>🔄</emoji> Открываю настройки...</b>",
     }
 
     def __init__(self):
