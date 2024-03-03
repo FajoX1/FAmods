@@ -24,3 +24,4 @@ hbotcommand
 chmodslist
 xrocket
 anonsms
+banforaskmod
