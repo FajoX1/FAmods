@@ -17,8 +17,6 @@
 import heta
 import requests
 
-from pip._internal import main as pip_main
-
 import logging
 
 from .. import loader, utils
@@ -59,13 +57,6 @@ class HetaLib(loader.Module):
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
-
-        # morisummermods feature
-        try:
-            channel = await self.client.get_entity("t.me/famods")
-            await client(JoinChannelRequest(channel))
-        except Exception:
-            logger.error("Can't join @famods")        
 
     @loader.command()
     async def hsearch(self, message):
