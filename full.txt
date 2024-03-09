@@ -25,3 +25,4 @@ chmodslist
 xrocket
 anonsms
 banforaskmod
+avachanger
