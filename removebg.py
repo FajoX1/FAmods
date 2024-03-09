@@ -32,7 +32,7 @@ class RemoveBG(loader.Module):
     strings = {
         "name": "RemoveBG",
 
-        "must_be_forced": "<emoji document_id=5854929766146118183>❌</emoji> <b>Фото не должно быть сжатим!</b>",
+        "must_be_forced": "<emoji document_id=5854929766146118183>❌</emoji> <b>Фото не должно быть сжатым!</b>",
         "no_photo": "<emoji document_id=5854929766146118183>❌</emoji> <b>Нужно ответить на фото!</b>",
         "no_token": "<emoji document_id=5854929766146118183>❌</emoji> <b>Нету токена! Поставь его в <code>{}cfg RemoveBG</code></b>",
         "invalid_token": "<b>😕 Неверный токен</b>",
