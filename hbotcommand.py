@@ -17,8 +17,6 @@ import re
 import logging
 
 from aiogram import types
-from telethon.tl.functions.channels import JoinChannelRequest
-
 from .. import loader, utils
 from ..inline.types import BotInlineMessage
 
@@ -67,13 +65,6 @@ class HbotCommand(loader.Module):
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
-
-        # morisummermods feature
-        try:
-            channel = await self.client.get_entity("t.me/famods")
-            await client(JoinChannelRequest(channel))
-        except Exception:
-            logger.error("Can't join @famods")
 
     @loader.command()
     async def busername(self, message):

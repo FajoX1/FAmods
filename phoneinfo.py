@@ -16,8 +16,6 @@
 import time
 import logging
 
-from telethon.tl.functions.channels import JoinChannelRequest
-
 from .. import loader, utils
 
 logger = logging.getLogger(__name__)
@@ -59,13 +57,6 @@ class PhoneInfo(loader.Module):
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
-
-        # morisummermods feature
-        try:
-            channel = await self.client.get_entity("t.me/famods")
-            await client(JoinChannelRequest(channel))
-        except Exception:
-            logger.error("Can't join @famods")
         
     async def _get_phone_info(self, query):
         try:

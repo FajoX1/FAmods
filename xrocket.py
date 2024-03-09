@@ -18,8 +18,6 @@ import asyncio
 
 import logging
 
-from telethon.tl.functions.channels import JoinChannelRequest
-
 from .. import loader, utils
 
 logger = logging.getLogger(__name__)
@@ -63,13 +61,6 @@ class xRocket(loader.Module):
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
-
-        # morisummermods feature
-        try:
-            channel = await self.client.get_entity("t.me/famods")
-            await client(JoinChannelRequest(channel))
-        except Exception:
-            logger.error("Can't join @famods")
 
     def bot(self):
         return self.xrocket_bot if not self.config['testnet'] else self.xrocket_testnetbot

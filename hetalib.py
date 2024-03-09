@@ -21,8 +21,6 @@ from pip._internal import main as pip_main
 
 import logging
 
-from telethon.tl.functions.channels import JoinChannelRequest
-
 from .. import loader, utils
 
 logger = logging.getLogger(__name__)
