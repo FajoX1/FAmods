@@ -84,12 +84,12 @@ class Wakatime(loader.Module):
         return f"""<b><emoji document_id=5190458330719461749>🧑‍💻</emoji> Юзернейм: <code>{username}</code>
 
 <emoji document_id=6334391057186293707>🕑</emoji> За всё время: <code>{all_time}</code>
-📃 Today: <code>{TODAY}</code>
+📃 Сегодня: <code>{TODAY}</code>
 
-<emoji document_id=6334742097748298141>🖥</emoji> OS:</b> <i>{OS}</i>
-<emoji document_id=5807454683714817955>💻</emoji> <b>Editor:</b> <i>{EDITOR}</i>
+<emoji document_id=6334742097748298141>🖥</emoji> ОС:</b> <i>{OS}</i>
+<emoji document_id=5807454683714817955>💻</emoji> <b>Редактор:</b> <i>{EDITOR}</i>
 
-<b>💈 Languages</b>
+<b>💈 Языки программирования</b>
 
 {LANG}\n"""
 
