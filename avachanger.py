@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: AvaChanger
-# Description: Смена аватарки
+# Description: Смена аватарки по времени
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/avachanger.png?raw=true
 # ---------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class AvaChanger(loader.Module):
-    """Смена аватарки"""
+    """Смена аватарки по времени"""
 
     strings = {
         "name": "AvaChanger",
