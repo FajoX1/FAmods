@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: Fabrika
-# Description: Autofarm in @fabrika
+# Description: Авто-фарм в @fabrika
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/fabrika.png?raw=true
 # ---------------------------------------------------------------------------------
