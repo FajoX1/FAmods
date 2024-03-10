@@ -81,6 +81,11 @@ class Tonscan(loader.Module):
            scam = "Да"
         except:
             pass
+        
+        is_contract = True
+        try: response['interfaces'][0]
+        except: is_contract = False
+           
 
         await utils.answer(message, f"""<b>
 <emoji document_id=5854713299794398583>💎</emoji> Ton wallet
@@ -91,8 +96,7 @@ class Tonscan(loader.Module):
 Скам: </b><i>{scam}</i><b>
 Статус: </b><i>{response['status']}</i><b>
 Последння активность: </b><i>{datetime.fromtimestamp(response['last_activity'])}</i><b>
-Контракт: <code>{response['interfaces'][0]}</code>
-
+{"Контракт: <code>{response['interfaces'][0]}</code>\n" if is_contract else ""}
 <a href="https://tonscan.org/address/{address}">Tonscan</a> • {ava}<a href="https://tonscan.org/address/{address}#transactions">История</a> • <a href="https://tonscan.org/address/{address}#nfts">NFT</a> • <a href="https://tonscan.org/address/{address}#tokens">jettons</a> • <a href="https://tonscan.org/address/{address}#source">Contract</a>
 </b>""")
         
