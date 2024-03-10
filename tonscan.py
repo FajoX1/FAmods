@@ -82,10 +82,15 @@ class Tonscan(loader.Module):
         except:
             pass
         
-        is_contract = True
-        try: response['interfaces'][0]
-        except: is_contract = False
-           
+        try: 
+           contract = f"Контракт: <code>{response['interfaces'][0]}</code>\n"
+        except: 
+           contract = ""
+
+        try: 
+           last_activity = f"\nПоследння активность: </b><i>{datetime.fromtimestamp(response['last_activity'])}</i><b>"
+        except: 
+           last_activity = ""
 
         await utils.answer(message, f"""<b>
 <emoji document_id=5854713299794398583>💎</emoji> Ton wallet
@@ -94,9 +99,8 @@ class Tonscan(loader.Module):
 Баланс: <code>{response['balance']} TON</code>
 
 Скам: </b><i>{scam}</i><b>
-Статус: </b><i>{response['status']}</i><b>
-Последння активность: </b><i>{datetime.fromtimestamp(response['last_activity'])}</i><b>
-{"Контракт: <code>{response['interfaces'][0]}</code>\n" if is_contract else ""}
+Статус: </b><i>{response['status']}</i><b>{last_activity}
+{contract}
 <a href="https://tonscan.org/address/{address}">Tonscan</a> • {ava}<a href="https://tonscan.org/address/{address}#transactions">История</a> • <a href="https://tonscan.org/address/{address}#nfts">NFT</a> • <a href="https://tonscan.org/address/{address}#tokens">jettons</a> • <a href="https://tonscan.org/address/{address}#source">Contract</a>
 </b>""")
         
