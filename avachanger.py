@@ -37,7 +37,10 @@ class AvaChanger(loader.Module):
 
         "changing_avatars": "<emoji document_id=5328274090262275771>🔄</emoji> <b>Меняю аватарки...</b>\n<i>⏳ Это займёт {} секунд</i>",
 
-        "completed": "<b><emoji document_id=5212932275376759608>✅</emoji> Готово. Сменил аватарку {} раз за {} секунд</b>.",
+        "was_off": "<emoji document_id=5440381017384822513>❌</emoji> <b>Смена аватарки была выключена!</b>",
+
+        "off": "<b><emoji document_id=5212932275376759608>✅</emoji> Выключил смену аватарки</b>",
+        "completed": "<b><emoji document_id=5212932275376759608>✅</emoji> Готово. Сменил аватарку {} раз за {} секунд/</b>",
     }
 
     async def client_ready(self, client, db):
@@ -62,7 +65,9 @@ class AvaChanger(loader.Module):
         if not r:
             return await utils.answer(message, self.strings['no_reply'])
         
-        await utils.answer(message, self.strings['changing_avatars'].format((time_c * counts)))
+        m = await utils.answer(message, self.strings['changing_avatars'].format((time_c * counts)))
+
+        self.m = m
 
         with tempfile.TemporaryDirectory() as temp_dir:
             file_path = os.path.join(temp_dir, os.path.basename("avatar.jpg"))
@@ -70,7 +75,21 @@ class AvaChanger(loader.Module):
             await message.client.download_media(r.media.photo, file_path)
 
             for i in range(counts):
+                if not self.m:
+                    return
                 await self.client(UploadProfilePhotoRequest(file=await self.client.upload_file(file_path)))
                 await asyncio.sleep(time_c)
 
+        self.m = None
+
         await utils.answer(message, self.strings['completed'].format(counts, (time_c * counts)))
+
+    @loader.command()
+    async def avatarl_stop(self, message):
+        """Выключить смену аватарки по времени"""
+
+        m = self.m
+        self.m = None
+
+        await utils.answer(m, self.strings['was_off'])
+        await utils.answer(message, self.strings['off'])
