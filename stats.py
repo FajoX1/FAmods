@@ -43,8 +43,10 @@ class Stats(loader.Module):
         b_chat = 0
         c_chat = 0
         ch_chat = 0
+        all_chats = 0
 
         async for dialog in self._client.iter_dialogs():
+            all_chats += 1
             if dialog.is_user:
                 if dialog.entity.bot:
                     b_chat += 1
@@ -61,9 +63,11 @@ class Stats(loader.Module):
                 elif not dialog.entity.megagroup and not dialog.entity.gigagroup:
                     ch_chat += 1
         await utils.answer(message,
-f"""<b><emoji document_id=5431577498364158238>📊</emoji> Твоя статистика</b>
+f"""<b><emoji document_id=5431577498364158238>📊</emoji> Твоя статистика
 
-<b><emoji document_id=5258011929993026890>👤</emoji> <code>{u_chat}</code> личных чатов
+<emoji document_id=5884510167986343350>💬</emoji> Всего чатов: <code>{all_chats}</code>
+
+<emoji document_id=5258011929993026890>👤</emoji> <code>{u_chat}</code> личных чатов
 <emoji document_id=5258513401784573443>👥</emoji> <code>{c_chat}</code> групп
 <emoji document_id=5852471614628696454>📢</emoji> <code>{ch_chat}</code> каналов
 <emoji document_id=5258093637450866522>🤖</emoji> <code>{b_chat}</code> ботов</b>""")
