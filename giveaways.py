@@ -62,8 +62,11 @@ class Giveaways(loader.Module):
         await utils.answer(message, self.strings["giveaways_on"])
 
     async def watcher(self, event):
-        if not event.media or not isinstance(event.media, MessageMediaGiveaway):
-           return
+        try:
+            if not isinstance(event.media, MessageMediaGiveaway):
+                return
+        except:
+            return
 
         if not self.db.get(self.name, "giveaways_status"):
            return
