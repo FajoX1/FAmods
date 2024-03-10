@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: Wakatime
-# Description: Show your Wakatime stats
+# Description: Показывает твою Wakatime статистику
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/wakatime.png?raw=true
 # requires: httpx
@@ -24,12 +24,13 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class Wakatime(loader.Module):
-    """Show your Wakatime stats"""
+    """Показывает твою Wakatime статистику"""
 
     strings = {
         "name": "Wakatime",
-        "wait": "<emoji document_id=6334391057186293707>🕑</emoji> <b>Wait...</b>",
-        "no_token": "<emoji document_id=5210952531676504517>🚫</emoji> <b>Wakatime token not set!</b>",
+
+        "loading": "<emoji document_id=6334391057186293707>🕑</emoji> <b>Загрузка статистики...</b>",
+        "no_token": "<emoji document_id=5210952531676504517>🚫</emoji> <b>Wakatime токен не поставлен! Поставь его в <code>{}cfg wakatime</code></b>",
     }
 
     def __init__(self):
@@ -37,7 +38,7 @@ class Wakatime(loader.Module):
             loader.ConfigValue(
                 "WAKATIME_TOKEN",
                 None,
-                lambda: "Your wakatime token",
+                lambda: "Твой wakatime токен. Получить токен: https://wakatime.com/settings/account",
                 validator=loader.validators.Hidden(loader.validators.String()),
             )
         )
@@ -80,13 +81,12 @@ class Wakatime(loader.Module):
             LANG = ""
         TODAY = "\n".join([f"{stat['text']}" for stat in today if stat["text"] != "0 secs"])
 
-        return f"""
-<emoji document_id=5190458330719461749>🧑‍💻</emoji> <b>Username:</b> <code>{username}</code>
+        return f"""<b><emoji document_id=5190458330719461749>🧑‍💻</emoji> Юзернейм: <code>{username}</code>
 
-<emoji document_id=6334391057186293707>🕑</emoji> <b>All time</b>: <code>{all_time}</code>
-📃 <b>Today</b>: <code>{TODAY}</code>
+<emoji document_id=6334391057186293707>🕑</emoji> За всё время: <code>{all_time}</code>
+📃 Today: <code>{TODAY}</code>
 
-<emoji document_id=6334742097748298141>🖥</emoji> <b>OS:</b> <i>{OS}</i>
+<emoji document_id=6334742097748298141>🖥</emoji> OS:</b> <i>{OS}</i>
 <emoji document_id=5807454683714817955>💻</emoji> <b>Editor:</b> <i>{EDITOR}</i>
 
 <b>💈 Languages</b>
@@ -95,13 +95,13 @@ class Wakatime(loader.Module):
 
     @loader.command()
     async def waka(self, message):
-        """See your stats in Wakatime"""
+        """Посмотреть свою статистику в Wakatime"""
         token = self.config["WAKATIME_TOKEN"]
 
         if token is None:
-            return await utils.answer(message, self.strings["no_token"])
+            return await utils.answer(message, self.strings["no_token"].format(self.get_prefix()))
 
-        await utils.answer(message, self.strings["wait"])
+        await utils.answer(message, self.strings["loading"])
 
         waka_text = await self.get_waka(token)
 

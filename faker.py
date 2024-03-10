@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: Faker
-# Description: Generate fake information
+# Description: Сгенерировать фейк информацию 
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/faker.png?raw=true
 # requires: faker
@@ -24,10 +24,11 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class Faker(loader.Module):
-    """Generate fake information"""
+    """Сгенерировать фейк информацию """
 
     strings = {
         "name": "Faker",
+
         "loading": "<b><emoji document_id=5332600281970517875>🔄</emoji> Генерирую информацию...</b>"
     }
 
