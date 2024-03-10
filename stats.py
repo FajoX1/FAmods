@@ -39,7 +39,6 @@ class Stats(loader.Module):
         """Получить статистику"""
 
         await utils.answer(message, self.strings['loading_stats'])
-        start = datetime.now()
         u_chat = 0
         b_chat = 0
         c_chat = 0
@@ -61,15 +60,10 @@ class Stats(loader.Module):
                         c_chat += 1
                 elif not dialog.entity.megagroup and not dialog.entity.gigagroup:
                     ch_chat += 1
-
-        end = datetime.now()
-        ms = (end - start).seconds
         await utils.answer(message,
-f"""<b><emoji document_id=5431577498364158238>📊</emoji> Твоя статистика
+f"""<b><emoji document_id=5431577498364158238>📊</emoji> Твоя статистика</b>
 
-<i>за <emoji document_id=5451732530048802485>⏳</emoji> <code>{ms}</code> секунд</b></i>
-
-<b><emoji document_id=5258011929993026890>👤</emoji> <code>{u_chat}</code> личных чатов</b>
-<b><emoji document_id=5258513401784573443>👥</emoji> <code>{c_chat}</code> групп</b>
-<b><emoji document_id=5852471614628696454>📢</emoji> <code>{ch_chat}</code> каналов</b>
-<b><emoji document_id=5258093637450866522>🤖</emoji> <code>{b_chat}</code> ботов</b>""")
+<b><emoji document_id=5258011929993026890>👤</emoji> <code>{u_chat}</code> личных чатов
+<emoji document_id=5258513401784573443>👥</emoji> <code>{c_chat}</code> групп
+<emoji document_id=5852471614628696454>📢</emoji> <code>{ch_chat}</code> каналов
+<emoji document_id=5258093637450866522>🤖</emoji> <code>{b_chat}</code> ботов</b>""")
