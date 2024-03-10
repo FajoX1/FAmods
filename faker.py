@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: Faker
-# Description: Сгенерировать фейк информацию 
+# Description: Генерация фейк информации
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/faker.png?raw=true
 # requires: faker
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class Faker(loader.Module):
-    """Сгенерировать фейк информацию """
+    """Генерация фейк информации"""
 
     strings = {
         "name": "Faker",

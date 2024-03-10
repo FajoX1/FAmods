@@ -36,7 +36,7 @@ class Stats(loader.Module):
 
     @loader.command()
     async def stats(self, message):
-        """Get stats"""
+        """Получить статистику"""
 
         await utils.answer(message, self.strings['loading_stats'])
         start = datetime.now()
