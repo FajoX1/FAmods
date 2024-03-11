@@ -98,9 +98,6 @@ class FAbusiness(loader.Module):
             getattr(event, "out", False)
             or not isinstance(event, Message)
             or not isinstance(event.peer_id, PeerUser)
-            or event.sender.bot
-            or event.sender.support
-            or event.sender.contact
             or not self.db.get(self.name, "business")
             or utils.get_chat_id(event)
             in {
@@ -110,6 +107,16 @@ class FAbusiness(loader.Module):
             }
         ):
             return
+        
+        try:
+            if (
+                event.sender.bot
+                or event.sender.support
+                or event.sender.contact
+            ):
+                return
+        except:
+            pass
     
         said_users = self.db.get(self.name, "said_users")
 
