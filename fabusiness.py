@@ -13,6 +13,7 @@
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/fabusiness.png?raw=true
 # ---------------------------------------------------------------------------------
 
+import time
 import logging
 
 from telethon.tl.types import Message, PeerUser
@@ -57,6 +58,18 @@ class FAbusiness(loader.Module):
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
+
+        self.last_message_time = {}
+
+    async def _check_message_rate(self, user_id: int) -> bool:
+        if user_id in self.last_message_time:
+            last_time = self.last_message_time[user_id]
+        
+            if time.time() - last_time < 300:
+                return False
+
+        self.last_message_time[user_id] = time.time()
+        return True
 
     @loader.command()
     async def business(self, message):
@@ -103,11 +116,16 @@ class FAbusiness(loader.Module):
         if not said_users:
             said_users = []
 
-        if event.from_id not in said_users:
-            said_users.append(event.from_id)
-            self.db.set(self.name, "said_users", said_users)
+        if not self.config['not_here']:
+            if event.from_id not in said_users:
+                said_users.append(event.from_id)
+                self.db.set(self.name, "said_users", said_users)
+            else:
+                return
+            
         else:
-            return
+            if not await self._check_message_rate(event.from_id):
+                return
         
         if self.config['not_here']:
             text = self.config['not_here_text']
