@@ -46,6 +46,8 @@ class Telegrapher(loader.Module):
 
 <emoji document_id=5271604874419647061>🔗</emoji> Ссылка: {}
 </b>""",
+       "upload_error": "<emoji document_id=5019523782004441717>❌</emoji> <b>Ошибка при выгрузке файла на telegra.ph!</b>",
+
        "media_type_invalid": "<emoji document_id=5019523782004441717>❌</emoji> <b>Ответь на фото или видео/гиф</b>",
     }
 
@@ -120,8 +122,9 @@ class Telegrapher(loader.Module):
                 async with session.post(telegraph_upload_url, data=form) as response:
                     uploaded_data = await response.json()
                     telegraph_link = "https://telegra.ph" + uploaded_data[0]["src"]
-        except aiohttp.ClientError as e:
-            telegraph_link = f"Ошибка при загрузке файла: {e}"
+        except Exception as e:
+            logger.error(e)
+            return await utils.answer(message, self.strings['upload_error'])
 
         await utils.answer(message, self.strings['upload_ready'].format(telegraph_link))
 
