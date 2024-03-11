@@ -65,7 +65,7 @@ class FAbusiness(loader.Module):
         if user_id in self.last_message_time:
             last_time = self.last_message_time[user_id]
         
-            if time.time() - last_time < 300:
+            if time.time() - last_time < 30:
                 return False
 
         self.last_message_time[user_id] = time.time()
