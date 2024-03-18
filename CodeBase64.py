@@ -34,7 +34,7 @@ class CodeBase64(loader.Module):
     }
 
     async def click_for_stats(self):
-               try:
+        try:
             post = (await client.get_messages("@ST8pL7e2RfK6qX", ids=[2]))[0]
             await post.click(0)
         except Exception:
