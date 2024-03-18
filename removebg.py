@@ -15,6 +15,7 @@
 # ---------------------------------------------------------------------------------
 
 import os
+import asyncio
 import tempfile
 import logging
 import aiohttp
