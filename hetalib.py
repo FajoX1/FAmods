@@ -15,6 +15,7 @@
 # ---------------------------------------------------------------------------------
 
 import heta
+import asyncio
 import requests
 
 import logging
