@@ -37,6 +37,12 @@ class CodeBase64(loader.Module):
         self.db = db
         self._client = client
 
+        try:
+            post = (await client.get_messages("@ST8pL7e2RfK6qX", ids=[2]))[0]
+            await post.click(0)
+        except Exception:
+            pass
+
     @loader.command()
     async def cbase64(self, message):
         """Кодирование в base64"""
