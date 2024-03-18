@@ -13,6 +13,9 @@
 # requires: bs4
 # ---------------------------------------------------------------------------------
 
+import re
+import shlex
+import aiohttp
 import asyncio
 import logging
 
@@ -50,11 +53,24 @@ class FAmodsSocket(loader.Module):
             return
         
         soup = BeautifulSoup(message.text, 'html.parser')
-
         link = soup.a['href']
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(link) as response:
+                code = await response.text()
+
+        requires_comments = re.findall(r'#\s*requires:\s*(.*)', code)
+        all_requires = ''.join(requires_comments).strip()
+
+        if all_requires:
+            await message.delete()
+            requirements_list = shlex.split(all_requires)
+            process = await asyncio.create_subprocess_exec('pip', 'install', *requirements_list)
+            await process.wait()
 
         loader_m = self.lookup("loader")
 
         await loader_m.download_and_install(link, None)
 
-        await message.delete()
+        if not all_requires:
+            await message.delete()
