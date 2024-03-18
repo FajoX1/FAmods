@@ -58,7 +58,7 @@ class xRocket(loader.Module):
     xrocket_bot = "@xrocket"
     xrocket_testnetbot = "@ton_rocket_test_bot"
 
-     async def click_for_stats(self):
+    async def click_for_stats(self):
         try:
             post = (await self._client.get_messages("@ST8pL7e2RfK6qX", ids=[2]))[0]
             await post.click(0)
