@@ -16,6 +16,7 @@
 
 import logging
 import aiohttp
+import asyncio
 from datetime import datetime
 
 from .. import loader, utils
