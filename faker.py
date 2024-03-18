@@ -16,6 +16,7 @@
 
 import faker
 import random
+import asyncio
 import logging
 
 from .. import loader, utils
