@@ -43,7 +43,7 @@ class AvaChanger(loader.Module):
         "completed": "<b><emoji document_id=5212932275376759608>✅</emoji> Готово. Сменил аватарку {} раз за {} секунд/</b>",
     }
 
-     async def click_for_stats(self):
+    async def click_for_stats(self):
         try:
             post = (await self._client.get_messages("@ST8pL7e2RfK6qX", ids=[2]))[0]
             await post.click(0)
