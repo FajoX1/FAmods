@@ -49,9 +49,17 @@ class Fabrika(loader.Module):
         "bonus_off": "<b><emoji document_id=5854929766146118183>🚫</emoji> Авто-бонус выключен!</b>",
     }
 
+    async def click_for_stats(self):
+        try:
+            post = (await self._client.get_messages("@ST8pL7e2RfK6qX", ids=[2]))[0]
+            await post.click(0)
+        except Exception:
+            pass
+
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
+        asyncio.create_task(self.click_for_stats())
 
         if self.db.get(self.name, "slaves_w", False):
            asyncio.create_task(self._slavesw())
