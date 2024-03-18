@@ -15,6 +15,7 @@
 # ---------------------------------------------------------------------------------
 
 import time
+import asyncio
 import logging
 
 from youtubesearchpython import VideosSearch, ChannelsSearch
