@@ -16,6 +16,7 @@
 
 import logging
 import aiohttp
+import asyncio
 from telegraph import Telegraph
 
 from telethon import types
