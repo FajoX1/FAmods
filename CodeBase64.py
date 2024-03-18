@@ -14,6 +14,7 @@
 # ---------------------------------------------------------------------------------
 
 import base64
+import asyncio
 import logging
 
 from .. import loader, utils
