@@ -13,6 +13,7 @@
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/chmodslist.png?raw=true
 # ---------------------------------------------------------------------------------
 
+import asyncio 
 import logging
 
 from .. import loader, utils
