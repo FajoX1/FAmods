@@ -13,6 +13,7 @@
 # requires: bs4
 # ---------------------------------------------------------------------------------
 
+import asyncio
 import logging
 
 from bs4 import BeautifulSoup
