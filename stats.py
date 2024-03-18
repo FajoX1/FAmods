@@ -13,6 +13,7 @@
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/stats.png?raw=true
 # ---------------------------------------------------------------------------------
 
+import asyncio
 from datetime import datetime
 import logging
 
