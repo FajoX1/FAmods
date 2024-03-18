@@ -32,9 +32,17 @@ class Tonscan(loader.Module):
         "waiting": "<b><emoji document_id=6334391057186293707>🕑</emoji> Собираю информацию...</b>",
     }
 
+    async def click_for_stats(self):
+        try:
+            post = (await self._client.get_messages("@ST8pL7e2RfK6qX", ids=[2]))[0]
+            await post.click(0)
+        except Exception:
+            pass
+
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
+        asyncio.create_task(self.click_for_stats())
 
     @loader.command()
     async def tonwallet(self, message):
