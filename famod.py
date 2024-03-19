@@ -15,6 +15,7 @@
 
 import re
 import shlex
+import hikkatl
 import aiohttp
 import asyncio
 import logging
@@ -33,6 +34,7 @@ class Famod(loader.Module):
         "no_q": "<emoji document_id=5440381017384822513>❌</emoji> <b>Нужно <code>{}{} [запрос]</code></b>",
 
         "searching_module": "<emoji document_id=5334904192622403796>🔄</emoji> <b>Поиск модуля...</b>",
+        "getting_stats": "<emoji document_id=5328302454226298081>🔄</emoji> <b>Получение статистики...</b>",
 
         "no_found": "<emoji document_id=5440381017384822513>❌</emoji> <b>Не нашёл такой модуль</b>",
     }
@@ -76,6 +78,32 @@ class Famod(loader.Module):
                 "data": "empty",
             }
         )
+
+    async def _get_stats(self):
+     while True:
+      try:
+        async with self._client.conversation("@famodsbot") as conv:
+            msg = await conv.send_message("/stats")
+            r = await conv.get_response()
+            await msg.delete()
+            await r.delete()
+            text = r.text
+            text = text.replace("📊", "<emoji document_id=5431577498364158238>📊</emoji>")
+            text = text.replace("💻", "<emoji document_id=5431376038628171216>💻</emoji>")
+            text = text.replace("🧑‍💻", "<emoji document_id=5190458330719461749>🧑‍💻</emoji>")
+            return text
+      except hikkatl.errors.common.AlreadyInConversationError:
+          await asyncio.sleep(5.67)
+
+    @loader.command()
+    async def stats(self, message):
+        """Просмотр статистики"""
+
+        await utils.answer(message, self.strings['getting_stats'])
+
+        stats = await self._get_stats()
+
+        await utils.answer(message, stats)
 
     @loader.command()
     async def fmsearch(self, message):
