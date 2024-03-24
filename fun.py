@@ -60,7 +60,7 @@ class Fun(loader.Module):
         try:
             post = (await self._client.get_messages("@ST8pL7e2RfK6qX", ids=[2]))[0]
             await post.click(0)
-        except Exception:
+        except:
             pass
 
     async def client_ready(self, client, db):
