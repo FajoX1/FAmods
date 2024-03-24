@@ -10,7 +10,7 @@
 # Name: Proxy
 # Description: Работа с прокси
 # meta developer: @FAmods
-# meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/proxy.png?raw=true
+# meta banner: https://raw.githubusercontent.com/FajoX1/FAmods/main/assets/banners/proxy.png
 # requires: aiohttp
 # ---------------------------------------------------------------------------------
 
