@@ -140,7 +140,6 @@ class Proxy(loader.Module):
                 async with session.get('http://example.com', proxy=f"{protocol}://{ip}:{port}", timeout=5) as res:
                     if res.status == 200:
                         return await utils.answer(message, f"""<emoji document_id=6334758581832779720>✅</emoji> <b>Прокси работает!</b>""")
-                
                     else:
                         return await utils.answer(message, self.strings['not_work_proxy'])
         except:
