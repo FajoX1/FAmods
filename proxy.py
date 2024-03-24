@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class Proxy(loader.Module):
-    """Получение прокси"""
+    """Работа с прокси"""
 
     strings = {
         "name": "Proxy",
