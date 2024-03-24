@@ -18,7 +18,6 @@ import random
 import aiohttp
 import asyncio
 import logging
-import socket
 
 from .. import loader, utils
 
