@@ -96,7 +96,7 @@ class Famod(loader.Module):
           await asyncio.sleep(5.67)
 
     @loader.command()
-    async def stats(self, message):
+    async def fmstats(self, message):
         """Просмотр статистики"""
 
         await utils.answer(message, self.strings['getting_stats'])
