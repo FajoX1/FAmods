@@ -20,8 +20,6 @@ import asyncio
 import logging
 import socket
 
-from proxy_checker import ProxyChecker
-
 from .. import loader, utils
 
 logger = logging.getLogger(__name__)
