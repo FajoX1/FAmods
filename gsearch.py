@@ -11,7 +11,7 @@
 # Description: Поиск в Google
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/gsearch.png?raw=true
-# requires: aiohttp google
+# requires: aiohttp google BeautifulSoup4
 # ---------------------------------------------------------------------------------
 
 import time
