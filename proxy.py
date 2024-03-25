@@ -31,7 +31,7 @@ class Proxy(loader.Module):
         "name": "Proxy",
 
         "not_work_proxy": "<emoji document_id=5854929766146118183>❌</emoji> <b>Прокси не работает</b>",
-        "no_args": "<emoji document_id=5854929766146118183>❌</emoji> <b>Должно быть </b><code>{}{} {}</code>",
+        "no_args": "<emoji document_id=5854929766146118183>❌</emoji> <b>Нужно быть </b><code>{}{} {}</code>",
         "no_link": "<emoji document_id=5854929766146118183>❌</emoji> <b>Нету ссылки на прокси! Вставь её в </b><code>{}cfg proxy</code>",
         "incorrect_protocol": "<b>😕 Неверный протокол или его нету в нашей базе!</b>",
         "update_link": "<b>😕 Истек срок работы ссылки! Обнови её в </b><code>{}cfg proxy</code>",

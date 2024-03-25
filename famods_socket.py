@@ -10,7 +10,7 @@
 # Name: FAmodsSocket
 # Description: Установка модулей через @FAmodsBot
 # meta developer: @FAmods
-# requires: bs4
+# requires: BeautifulSoup4
 # ---------------------------------------------------------------------------------
 
 import re
