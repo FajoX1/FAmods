@@ -41,6 +41,16 @@ class Executor(loader.Module):
         "executing": "<b><emoji document_id=5332600281970517875>🔄</emoji> Выполняю код...</b>"
     }
 
+    def __init__(self):
+        self.config = loader.ModuleConfig(
+            loader.ConfigValue(
+                "hide_phone",
+                False,
+                lambda: "Скрывает твой номер телефона при выводе",
+                validator=loader.validators.Boolean()
+            ),
+        )
+
     async def click_for_stats(self):
         try:
             post = (await self._client.get_messages("@ST8pL7e2RfK6qX", ids=[2]))[0]
@@ -103,7 +113,15 @@ class Executor(loader.Module):
         result, res, cerr = await self.cexecute(code, message, reply)
         stop_time = time.perf_counter()
 
-       # result = result.replace("+"+me.phone, "never gonna give you up").replace(me.phone, "never gonna give you up")
+        me = await self.client.get_me()
+
+        if self.config['hide_phone']:
+            t_h = "never gonna give you up"
+
+            if result:
+                result = result.replace("+"+me.phone, t_h).replace(me.phone, t_h)
+            if res:
+                res = res.replace("+"+me.phone, t_h).replace(me.phone, t_h)
 
         if result:
             result = f"""{'<emoji document_id=6334758581832779720>✅</emoji> Результат' if not cerr else '<emoji document_id=5440381017384822513>🚫</emoji> Ошибка'}:
