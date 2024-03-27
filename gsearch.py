@@ -34,7 +34,7 @@ class Gsearch(loader.Module):
     strings = {
         "name": "Gsearch",
 
-        "no_q": "<emoji document_id=5854929766146118183>❌</emoji> <b>Должно быть .gsearch [запрос]</b>",
+        "no_q": "<emoji document_id=5854929766146118183>❌</emoji> <b>Должно быть </b><code>{}gsearch [запрос]</code>",
         "no_result": "<b>😕 Ничего не нашёл по этому запросу</b>",
 
         "searching": "<emoji document_id=5326015457155620929>🔄</emoji> <b>Поиск в google.com...</b>",
@@ -102,7 +102,7 @@ class Gsearch(loader.Module):
 
         q = utils.get_args_raw(message)
         if not q:
-            return await utils.answer(message, self.strings["no_q"])
+            return await utils.answer(message, self.strings["no_q"].format(self.get_prefix()))
 
         await utils.answer(message, self.strings['searching'])
 

@@ -32,3 +32,4 @@ famods_socket
 famod
 proxy
 gemini
+executor
