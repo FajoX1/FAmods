@@ -84,7 +84,7 @@ class Executor(loader.Module):
                 **functions,
             )
         except:
-            return HikkaException.from_exc_info(*sys.exc_info()), None, True
+            return traceback.format_exc().strip(), None, True
         return result.getvalue().strip(), res, False
 
     @loader.command()
