@@ -115,6 +115,9 @@ class Executor(loader.Module):
 
         me = await self.client.get_me()
 
+        result = str(result)
+        res = str(res)
+
         if self.config['hide_phone']:
             t_h = "never gonna give you up"
 
