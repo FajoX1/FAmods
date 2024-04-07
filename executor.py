@@ -130,7 +130,7 @@ class Executor(loader.Module):
             result = f"""{'<emoji document_id=6334758581832779720>✅</emoji> Результат' if not cerr else '<emoji document_id=5440381017384822513>🚫</emoji> Ошибка'}:
 <pre><code class="language-python">{result}</code></pre>
 """
-        if res or res == 0 or res == False:
+        if res or res == 0 or res == False and res is not None:
             result += f"""<emoji document_id=6334778871258286021>💾</emoji> Код вернул:
 <pre><code class="language-python">{res}</code></pre>
 """
