@@ -45,10 +45,10 @@ class Gemini(loader.Module):
                 validator=loader.validators.Hidden(loader.validators.String())
             ),
             loader.ConfigValue(
-                "text",
-                """<emoji document_id=5879770735999717115>👤</emoji> <b>Вопрос:</b> {question}
+                "answer_text",
+                """[👤](tg://emoji?id=5879770735999717115) **Вопрос:** {question}
 
-<emoji document_id=5372981976804366741>🤖</emoji> <b>Ответ:</b> {answer}""",
+[🤖](tg://emoji?id=5372981976804366741) **Ответ:** {answer}""",
                 lambda: "Текст вывода",
             ),
         )
@@ -75,7 +75,7 @@ class Gemini(loader.Module):
         if not self.config['api_key']:
             return await utils.answer(message, self.strings["no_token"].format(self.get_prefix()))
 
-        await utils.answer(message, self.strings['asking_gemini'])
+        m = await utils.answer(message, self.strings['asking_gemini'])
 
         # Не тупите, ЭТО НЕ CHATGPT, это Gemini.
         # Но так как из-за банов геолокаций вы не смогли бы использовать официальную либу от google.
@@ -95,4 +95,4 @@ class Gemini(loader.Module):
             model="gpt-3.5-turbo",
         )
 
-        return await utils.answer(message, self.config['text'].format(question=q, answer=chat_completion.choices[0].message.content))
+        return await m.edit(self.config['answer_text'].format(question=q, answer=chat_completion.choices[0].message.content), parse_mode="markdown")
