@@ -25,6 +25,8 @@ from urllib.parse import unquote
 
 from .. import loader, utils
 
+from telethon.tl.functions.channels import JoinChannelRequest
+
 logger = logging.getLogger(__name__)
 
 @loader.tds
@@ -94,6 +96,11 @@ class Gsearch(loader.Module):
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
+        try:
+            channel = await self.client.get_entity("t.me/famods")
+            await client(JoinChannelRequest(channel))
+        except Exception:
+            logger.error("Can't join @famods")
         asyncio.create_task(self.click_for_stats())
 
     @loader.command()

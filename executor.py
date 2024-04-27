@@ -25,6 +25,8 @@ from meval import meval
 from io import StringIO
 
 from .. import loader, utils
+
+from telethon.tl.functions.channels import JoinChannelRequest
 from ..log import HikkaException
 
 logger = logging.getLogger(__name__)
@@ -61,6 +63,11 @@ class Executor(loader.Module):
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
+        try:
+            channel = await self.client.get_entity("t.me/famods")
+            await client(JoinChannelRequest(channel))
+        except Exception:
+            logger.error("Can't join @famods")
         asyncio.create_task(self.click_for_stats())
 
     async def cexecute(self, code, message, reply):
