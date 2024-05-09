@@ -89,7 +89,7 @@ class Gemini(loader.Module):
 
         client = OpenAI(
             api_key=self.config['api_key'],
-            base_url="https://my-openai-gemini-beta-two.vercel.app/v1" # Для работы с Gemini а не с ChatGPT
+            base_url="https://gemini-openai.vercel.app/v1" # Для работы с Gemini а не с ChatGPT
         )
 
         chat_completion = client.chat.completions.create(
