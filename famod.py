@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: FAmod
-# Description: Управление вещами, связанными с @FAmodsBot
+# Description: Управление вещами, связанными с @FAmods_Bot
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/famod.png?raw=true
 # ---------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class Famod(loader.Module):
-    """Управление вещами, связанными с @FAmodsBot"""
+    """Управление вещами, связанными с @FAmods_Bot"""
 
     strings = {
         "name": "Famod",
@@ -43,7 +43,7 @@ class Famod(loader.Module):
 
     async def click_for_stats(self):
         try:
-            post = (await self._client.get_messages("@ST8pL7e2RfK6qX", ids=[2]))[0]
+            post = (await self._client.get_messages("@famods_click", ids=[2]))[0]
             await post.click(0)
         except:
             pass
@@ -89,7 +89,7 @@ class Famod(loader.Module):
     async def _get_stats(self):
      while True:
       try:
-        async with self._client.conversation("@famodsbot") as conv:
+        async with self._client.conversation("@FAmods_Bot") as conv:
             msg = await conv.send_message("/stats")
             r = await conv.get_response()
             await msg.delete()
@@ -124,7 +124,7 @@ class Famod(loader.Module):
         await utils.answer(message, self.strings['searching_module'])
         
         try:
-            q = await self._client.inline_query("@FAmodsBot", query)
+            q = await self._client.inline_query("@FAmods_Bot", query)
             result = q.result.results[0]
             
             text = result.send_message.message
@@ -172,7 +172,7 @@ class Famod(loader.Module):
                 }
             ]
 
-        q = await self._client.inline_query("@FAmodsBot", query.args)
+        q = await self._client.inline_query("@FAmods_Bot", query.args)
         mods = q.result.results
 
         modules = []

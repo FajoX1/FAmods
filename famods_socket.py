@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: FAmodsSocket
-# Description: Установка модулей через @FAmodsBot
+# Description: Установка модулей через @FAmods_Bot
 # meta developer: @FAmods
 # requires: BeautifulSoup4
 # ---------------------------------------------------------------------------------
@@ -29,13 +29,13 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class FAmodsSocket(loader.Module):
-    """Установка модулей через @FAmodsBot"""
+    """Установка модулей через @FAmods_Bot"""
 
     strings = {"name": "FAmodsSocket"}
 
     async def click_for_stats(self):
         try:
-            post = (await self._client.get_messages("@ST8pL7e2RfK6qX", ids=[2]))[0]
+            post = (await self._client.get_messages("@famods_click", ids=[2]))[0]
             await post.click(0)
         except:
             pass
