@@ -53,7 +53,7 @@ class FAmodsSocket(loader.Module):
     async def watcher(self, message):
         chat = utils.get_chat_id(message)
         
-        if chat != 7144246609:
+        if chat != 7283754755:
             return
         
         if not message.text.startswith('<a href="https://raw.githubusercontent.com/FajoX1/FAmods/main/'):
