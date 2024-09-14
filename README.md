@@ -22,7 +22,7 @@
 
 </div>
 
-> <i>Все файлы этого репозитория находятся под <b>GNU AGPLv3.</b></i><br>
+> <i>Все файлы этого репозитория находятся под лицензией <b>GNU AGPLv3.</b></i><br>
 > <b>https://www.gnu.org/licenses/agpl-3.0.html</b>
 
 ## ❓ Нашёл баг?
@@ -30,6 +30,6 @@
 
 <hr>
 
-### ✈️ <a href="https://t.me/famods">Канал</a> | <a href="https://t.me/FaModsChat">Чат</a> | <a href="https://t.me/vecax">Разработчик</a> 
+### ✈️ <a href="https://t.me/FAmods">Канал</a> | <a href="https://t.me/FAmods_Chat">Чат</a> | <a href="https://t.me/vecax">Разработчик</a> 
 
 </div>
