@@ -33,3 +33,4 @@ famod
 proxy
 gemini
 executor
+cryptoqr
