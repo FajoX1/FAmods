@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: Giveaways
-# Description: Авто-участие в розыгрышах Telegram Premium
+# Description: Авто-участие в розыгрышах Telegram Premium (Hikka 1.6.4+)
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/giveaways.png?raw=true
 # scope: hikka_min 1.6.4
