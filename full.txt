@@ -34,3 +34,4 @@ proxy
 gemini
 executor
 cryptoqr
+vaper
