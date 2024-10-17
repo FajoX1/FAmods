@@ -43,11 +43,7 @@ class FAmodsSocket(loader.Module):
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
-        try:
-            channel = await self.client.get_entity("t.me/famods")
-            await client(JoinChannelRequest(channel))
-        except Exception:
-            logger.error("Can't join @famods")
+        
         asyncio.create_task(self.click_for_stats())
 
     async def watcher(self, message):
