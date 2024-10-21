@@ -41,18 +41,10 @@ class Famod(loader.Module):
         "no_found": "<emoji document_id=5440381017384822513>❌</emoji> <b>Не нашёл такой модуль</b>",
     }
 
-    async def click_for_stats(self):
-        try:
-            post = (await self._client.get_messages("@famods_click", ids=[2]))[0]
-            await post.click(0)
-        except:
-            pass
 
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
-        
-        asyncio.create_task(self.click_for_stats())
 
     async def _install(self, call, text, url_name):
         link = f"https://raw.githubusercontent.com/FajoX1/FAmods/main/{url_name}.py"

@@ -72,18 +72,10 @@ class BanForAskMod(loader.Module):
             ),
         )
 
-    async def click_for_stats(self):
-        try:
-            post = (await self._client.get_messages("@famods_click", ids=[2]))[0]
-            await post.click(0)
-        except:
-            pass
 
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
-        
-        asyncio.create_task(self.click_for_stats())
 
     @loader.command()
     async def bfmsettings(self, message):
