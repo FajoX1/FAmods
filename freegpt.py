@@ -122,7 +122,7 @@ class FreeGPT(loader.Module):
 
     @loader.command()
     async def gfi(self, message):
-        """Сгенерировать картинку с помощью DALL-E"""
+        """Сгенерировать картинку"""
         prompt = utils.get_args_raw(message)
         if not prompt:
             return await utils.answer(message, self.strings["no_args"].format(self.get_prefix(), "gfi", "[промпт]"))
