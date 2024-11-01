@@ -25,8 +25,6 @@ from meval import meval
 from io import StringIO
 
 from .. import loader, utils
-
-from telethon.tl.functions.channels import JoinChannelRequest
 from ..log import HikkaException
 
 logger = logging.getLogger(__name__)

@@ -25,8 +25,6 @@ from urllib.parse import unquote
 
 from .. import loader, utils
 
-from telethon.tl.functions.channels import JoinChannelRequest
-
 logger = logging.getLogger(__name__)
 
 @loader.tds

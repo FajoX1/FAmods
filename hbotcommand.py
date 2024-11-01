@@ -19,8 +19,6 @@ import logging
 
 from aiogram import types
 from .. import loader, utils
-
-from telethon.tl.functions.channels import JoinChannelRequest
 from ..inline.types import BotInlineMessage
 
 logger = logging.getLogger(__name__)

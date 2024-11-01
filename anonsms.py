@@ -19,7 +19,6 @@ import logging
 
 from .. import loader, utils
 
-from telethon.tl.functions.channels import JoinChannelRequest
 from ..inline.types import InlineCall, BotInlineMessage
 
 logger = logging.getLogger(__name__)
