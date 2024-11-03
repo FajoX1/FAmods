@@ -11,7 +11,7 @@
 # Description: Модуль для работы с heta
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/hetalib.png?raw=true
-# requires: heta requests
+# requires: heta==1.0.2 requests
 # ---------------------------------------------------------------------------------
 
 import heta
