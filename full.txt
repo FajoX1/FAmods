@@ -36,3 +36,4 @@ executor
 cryptoqr
 vaper
 freegpt
+grokai
