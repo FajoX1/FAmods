@@ -69,7 +69,7 @@ class GrokAI(loader.Module):
         if not self.config['api_key']:
             return await utils.answer(message, self.strings["no_token"].format(self.get_prefix()))
 
-        m = await utils.answer(message, self.strings['asking_grok'])
+        await utils.answer(message, self.strings['asking_grok'])
 
         # Не тупите, ЭТО НЕ CHATGPT, это ГРОК от илона маска.
         # В документации для грока использовалась либа опенаи, так что меня заставили её юзануть ><

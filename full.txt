@@ -37,3 +37,4 @@ cryptoqr
 vaper
 freegpt
 grokai
+gigachat
