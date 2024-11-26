@@ -7,7 +7,7 @@
 # 🌐 https://www.gnu.org/licenses/agpl-3.0.html
 
 # ---------------------------------------------------------------------------------
-# Name: BicMac
+# Name: BigMac
 # Description: Авто-фарм в @BigMacMetreBot
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/bigmac.png?raw=true
@@ -25,11 +25,11 @@ from .. import loader, utils
 logger = logging.getLogger(__name__)
 
 @loader.tds
-class BicMac(loader.Module):
+class BigMac(loader.Module):
     """Авто-фарм в @BigMacMetreBot"""
 
     strings = {
-        "name": "BicMac",
+        "name": "BigMac",
 
         "checking_profile": "<b><emoji document_id=5424885441100782420>👀</emoji> Смотрю профиль...</b>",
         "getting_top": "<b><emoji document_id=5424885441100782420>👀</emoji> Смотрю статистику...</b>",
