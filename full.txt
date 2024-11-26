@@ -38,3 +38,4 @@ vaper
 freegpt
 grokai
 gigachat
+bigmac
