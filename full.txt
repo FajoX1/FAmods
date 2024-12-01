@@ -39,3 +39,4 @@ freegpt
 grokai
 gigachat
 bigmac
+evalaliases
