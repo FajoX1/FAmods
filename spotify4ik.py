@@ -97,12 +97,6 @@ class Spotify4ik(loader.Module):
                 "🎵 {track_name} - {artist_name}",
                 lambda: "Текст био с текущим треком",
             ),
-            loader.ConfigValue(
-                "bio_change",
-                False,
-                lambda: "Авто смена био с текущим треком",
-                validator=loader.validators.Boolean(),
-            ),
         )
 
     async def client_ready(self, client, db):
