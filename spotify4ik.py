@@ -339,3 +339,25 @@ class Spotify4ik(loader.Module):
             if "NO_ACTIVE_DEVICE" in str(e):
                 return await utils.answer(message, self.strings['no_song_playing'])
             return await utils.answer(message, self.strings['unexpected_error'].format(str(e)))
+
+    @loader.loop(interval=60*40, autostart=True)
+    async def loop(self):
+        if not self.config['auth_token']:
+            return
+
+        sp_oauth = spotipy.oauth2.SpotifyOAuth(
+            client_id=self.config['client_id'],
+            client_secret=self.config['client_secret'],
+            redirect_uri="https://sp.fajox.one",
+            scope="user-read-playback-state"
+        )
+
+        try:
+            sp = spotipy.Spotify(auth=self.config['auth_token'])
+            sp.current_playback()
+        except:
+            try:
+                token_info = sp_oauth.refresh_access_token(self.config['auth_token'])
+                self.config['auth_token'] = token_info['access_token']
+            except:
+                logger.error("Failed to refresh Spotify token", exc_info=True)
