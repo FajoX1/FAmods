@@ -326,7 +326,7 @@ class Spotify4ik(loader.Module):
                         )
                     ],
                     thumb=art_path,
-                    reply_to=message.reply_to_msg_id if message.is_reply else None
+                    reply_to=message.reply_to_msg_id if message.is_reply else getattr(message, "top_id", None)
                 )
 
             await message.delete()
