@@ -353,11 +353,7 @@ class Spotify4ik(loader.Module):
         )
 
         try:
-            sp = spotipy.Spotify(auth=self.config['auth_token'])
-            sp.current_playback()
+            token_info = sp_oauth.refresh_access_token(self.config['auth_token'])
+            self.config['auth_token'] = token_info['access_token']
         except:
-            try:
-                token_info = sp_oauth.refresh_access_token(self.config['auth_token'])
-                self.config['auth_token'] = token_info['access_token']
-            except:
-                logger.error("Failed to refresh Spotify token", exc_info=True)
+            logger.error("Failed to refresh Spotify token", exc_info=True)
