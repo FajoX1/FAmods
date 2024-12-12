@@ -40,3 +40,4 @@ grokai
 gigachat
 bigmac
 evalaliases
+spotify4ik
