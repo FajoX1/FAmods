@@ -369,7 +369,9 @@ class Spotify4ik(loader.Module):
             )
 
             token_info = sp_oauth.refresh_access_token(self.config['refresh_token'])
+            logging.info("success")
             self.config['auth_token'] = token_info['access_token']
             self.config['refresh_token'] = token_info['refresh_token']
         except Exception as e:
-            logger.error(f"Failed to refresh Spotify token: {str(e)}", exc_info=True)
+            pass
+        #    logger.error(f"Failed to refresh Spotify token: {str(e)}", exc_info=True)
