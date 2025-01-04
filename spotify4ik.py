@@ -93,10 +93,25 @@ class Spotify4ik(loader.Module):
                 validator=loader.validators.Hidden(loader.validators.String()),
             ),
             loader.ConfigValue(
+                "refresh_token",
+                None,
+                lambda: "Токен для обновления",
+                validator=loader.validators.Hidden(loader.validators.String()),
+            ),
+            loader.ConfigValue(
                 "bio_text",
                 "🎵 {track_name} - {artist_name}",
                 lambda: "Текст био с текущим треком",
             ),
+            loader.ConfigValue(
+                "scopes",
+                (
+                    "user-read-playback-state playlist-read-private playlist-read-collaborative"
+                    " app-remote-control user-modify-playback-state user-library-modify"
+                    " user-library-read"
+                ),
+                lambda: "Список разрешений",
+            )
         )
 
     async def client_ready(self, client, db):
@@ -133,7 +148,7 @@ class Spotify4ik(loader.Module):
             client_id=self.config['client_id'],
             client_secret=self.config['client_secret'],
             redirect_uri="https://sp.fajox.one",
-            scope="user-read-playback-state"
+            scope=self.config['scopes']
         )
 
         auth_url = sp_oauth.get_authorize_url()
@@ -153,11 +168,11 @@ class Spotify4ik(loader.Module):
             client_id=self.config['client_id'],
             client_secret=self.config['client_secret'],
             redirect_uri="https://sp.fajox.one",
-            scope="user-read-playback-state"
+            scope=self.config['scopes']
         )
-
         token_info = sp_oauth.get_access_token(code)
         self.config['auth_token'] = token_info['access_token']
+        self.config['refresh_token'] = token_info['refresh_token']
 
         try:
             sp = spotipy.Spotify(auth=token_info['access_token'])
@@ -345,15 +360,16 @@ class Spotify4ik(loader.Module):
         if not self.config['auth_token']:
             return
 
-        sp_oauth = spotipy.oauth2.SpotifyOAuth(
-            client_id=self.config['client_id'],
-            client_secret=self.config['client_secret'],
-            redirect_uri="https://sp.fajox.one",
-            scope="user-read-playback-state"
-        )
-
         try:
-            token_info = sp_oauth.refresh_access_token(self.config['auth_token'])
+            sp_oauth = spotipy.oauth2.SpotifyOAuth(
+                client_id=self.config['client_id'],
+                client_secret=self.config['client_secret'],
+                redirect_uri="https://sp.fajox.one",
+                scope=self.config['scopes']
+            )
+
+            token_info = sp_oauth.refresh_access_token(self.config['refresh_token'])
             self.config['auth_token'] = token_info['access_token']
-        except:
-            logger.error("Failed to refresh Spotify token", exc_info=True)
+            self.config['refresh_token'] = token_info['refresh_token']
+        except Exception as e:
+            logger.error(f"Failed to refresh Spotify token: {str(e)}", exc_info=True)
