@@ -70,6 +70,12 @@ class Spotify4ik(loader.Module):
         "music_bio_enabled": "<b><emoji document_id=5188621441926438751>🎵</emoji> Стрим музыки в био включен</b>",
 
         "track_skipped": "<b><emoji document_id=5188621441926438751>🎵</emoji> Следующий трек...</b>",
+
+        "track_repeat": "<b><emoji document_id=6334550748365325938>🔁</emoji> Трек будет повторяться.</b>",
+        "track_norepeat": "<b><emoji document_id=6334550748365325938>🔁</emoji> Трек не будет повторяться.</b>",
+
+        "track_liked": f"<b><emoji document_id=5287454910059654880>❤️</emoji> Трек добавлен в избранное!</b>",
+        
     }
 
     def __init__(self):
@@ -229,6 +235,53 @@ class Spotify4ik(loader.Module):
         await utils.answer(message, self.strings['track_play'])
 
     @loader.command()
+    async def spbegin(self, message):
+        """Включить текущий трек с начала"""
+        if not self.config['auth_token']:
+            return await utils.answer(message, self.strings['no_auth_token'].format(self.get_prefix()))
+
+        sp = spotipy.Spotify(auth=self.config['auth_token'])
+
+        try:
+            current_playback = sp.current_playback()
+            if not current_playback or not current_playback.get('item'):
+                return await utils.answer(message, self.strings['no_song_playing'])
+
+            track_uri = current_playback['item']['uri']
+            sp.start_playback(uris=[track_uri])
+            sp.seek_track(0)
+            await utils.answer(message, self.strings['track_play'])
+        except spotipy.oauth2.SpotifyOauthError as e:
+            return await utils.answer(message, self.strings['auth_error'].format(str(e)))
+        except spotipy.exceptions.SpotifyException as e:
+            if "The access token expired" in str(e):
+                return await utils.answer(message, self.strings['no_auth_token'].format(self.get_prefix()))
+            if "NO_ACTIVE_DEVICE" in str(e):
+                return await utils.answer(message, self.strings['no_song_playing'])
+                return await utils.answer(message, self.strings['unexpected_error'].format(str(e)))
+
+    @loader.command()
+    async def spback(self, message):
+        """Включить предыдущий трек"""
+        if not self.config['auth_token']:
+            return await utils.answer(message, self.strings['no_auth_token'].format(self.get_prefix()))
+
+        sp = spotipy.Spotify(auth=self.config['auth_token'])
+
+        try:
+            sp.previous_track()
+        except spotipy.oauth2.SpotifyOauthError as e:
+            return await utils.answer(message, self.strings['auth_error'].format(str(e)))
+        except spotipy.exceptions.SpotifyException as e:
+            if "The access token expired" in str(e):
+                return await utils.answer(message, self.strings['no_auth_token'].format(self.get_prefix()))
+            if "NO_ACTIVE_DEVICE" in str(e):
+                return await utils.answer(message, self.strings['no_song_playing'])
+                return await utils.answer(message, self.strings['unexpected_error'].format(str(e)))
+
+        await utils.answer(message, self.strings['track_play'])
+
+    @loader.command()
     async def spnext(self, message):
         """Включить следующий трек"""
         if not self.config['auth_token']:
@@ -263,7 +316,80 @@ class Spotify4ik(loader.Module):
         self.db.set(self.name, 'bio_change', True)
         self._bio_task = asyncio.create_task(self._update_bio())
         await utils.answer(message, self.strings['music_bio_enabled'])
+
+    @loader.command()
+    async def splike(self, message):
+        """Лайкнуть текущий трек"""
+        if not self.config['auth_token']:
+            return await utils.answer(message, self.strings['no_auth_token'].format(self.get_prefix()))
+
+        sp = spotipy.Spotify(auth=self.config['auth_token'])
+
+        try:
+            current_playback = sp.current_playback()
+            if not current_playback or not current_playback.get('item'):
+                return await utils.answer(message, self.strings['no_song_playing'])
+
+            track_id = current_playback['item']['id']
+            sp.current_user_saved_tracks_add([track_id])
+            await utils.answer(message, self.strings['track_liked'])
+        except spotipy.oauth2.SpotifyOauthError as e:
+            return await utils.answer(message, self.strings['auth_error'].format(str(e)))
+        except spotipy.exceptions.SpotifyException as e:
+            if "The access token expired" in str(e):
+                return await utils.answer(message, self.strings['no_auth_token'].format(self.get_prefix()))
+            if "NO_ACTIVE_DEVICE" in str(e):
+                return await utils.answer(message, self.strings['no_song_playing'])
+            return await utils.answer(message, self.strings['unexpected_error'].format(str(e)))
+
+    @loader.command()
+    async def sprepeat(self, message):
+        """Повторить текущий трек"""
+        if not self.config['auth_token']:
+            return await utils.answer(message, self.strings['no_auth_token'].format(self.get_prefix()))
+
+        sp = spotipy.Spotify(auth=self.config['auth_token'])
+
+        try:
+            current_playback = sp.current_playback()
+            if not current_playback or not current_playback.get('item'):
+                return await utils.answer(message, self.strings['no_song_playing'])
+
+            sp.repeat("track")
+            await utils.answer(message, self.strings['track_repeat'])
+        except spotipy.oauth2.SpotifyOauthError as e:
+            return await utils.answer(message, self.strings['auth_error'].format(str(e)))
+        except spotipy.exceptions.SpotifyException as e:
+            if "The access token expired" in str(e):
+                return await utils.answer(message, self.strings['no_auth_token'].format(self.get_prefix()))
+            if "NO_ACTIVE_DEVICE" in str(e):
+                return await utils.answer(message, self.strings['no_song_playing'])
+            return await utils.answer(message, self.strings['unexpected_error'].format(str(e)))
         
+    @loader.command()
+    async def spnorepeat(self, message):
+        """Перестать повторять текущий трек"""
+        if not self.config['auth_token']:
+            return await utils.answer(message, self.strings['no_auth_token'].format(self.get_prefix()))
+
+        sp = spotipy.Spotify(auth=self.config['auth_token'])
+
+        try:
+            current_playback = sp.current_playback()
+            if not current_playback or not current_playback.get('item'):
+                return await utils.answer(message, self.strings['no_song_playing'])
+
+            sp.repeat("no")
+            await utils.answer(message, self.strings['track_norepeat'])
+        except spotipy.oauth2.SpotifyOauthError as e:
+            return await utils.answer(message, self.strings['auth_error'].format(str(e)))
+        except spotipy.exceptions.SpotifyException as e:
+            if "The access token expired" in str(e):
+                return await utils.answer(message, self.strings['no_auth_token'].format(self.get_prefix()))
+            if "NO_ACTIVE_DEVICE" in str(e):
+                return await utils.answer(message, self.strings['no_song_playing'])
+            return await utils.answer(message, self.strings['unexpected_error'].format(str(e)))
+
     @loader.command()
     async def spnow(self, message):
         """Текущий трек"""
@@ -369,7 +495,6 @@ class Spotify4ik(loader.Module):
             )
 
             token_info = sp_oauth.refresh_access_token(self.config['refresh_token'])
-            logging.info("success")
             self.config['auth_token'] = token_info['access_token']
             self.config['refresh_token'] = token_info['refresh_token']
         except Exception as e:
