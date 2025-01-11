@@ -8,7 +8,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: PicMe
-# Description: Будь пикми!!!
+# Description: Кринж модуль
 # meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/picme.png?raw=true
 # ---------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class PicMe(loader.Module):
-    """Будь пикми!!!"""
+    """Кринж модуль"""
 
     strings = {
         "name": "PicMe",
