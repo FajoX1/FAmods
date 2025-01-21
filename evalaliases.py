@@ -108,7 +108,10 @@ class EvalAliases(loader.Module):
         await utils.answer(message, self.strings["aliases"].format(aliases_list))
     
     async def watcher(self, event):
-        if event.from_id != self.tg_id:
+        try:
+            if event.from_id != self.tg_id:
+                return
+        except:
             return
         if f"{self.get_prefix()}v" not in event.raw_text:
             return 

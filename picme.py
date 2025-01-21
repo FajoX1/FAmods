@@ -67,7 +67,10 @@ class PicMe(loader.Module):
         await utils.answer(message, self.strings["p_on"])
 
     async def watcher(self, event):
-        if event.from_id != self.tg_id:
+        try:
+            if event.from_id != self.tg_id:
+                return
+        except:
             return
         if not self.db.get(self.name, "picme", False):
             return
