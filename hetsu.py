@@ -9,7 +9,7 @@
 # ---------------------------------------------------------------------------------
 # Name: Hetsu
 # Description: Search and install modules easily.
-# meta developer: @HetsuNews, @FAmods
+# meta developer: @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/hetsu.png?raw=true
 # requires: aiohttp googletrans==4.0.0-rc1
 # ---------------------------------------------------------------------------------
