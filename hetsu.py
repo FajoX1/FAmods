@@ -9,7 +9,7 @@
 # ---------------------------------------------------------------------------------
 # Name: Hetsu
 # Description: Search and install modules easily.
-# meta developer: @FAmods
+# meta developer: @HetsuNews, @FAmods
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/hetsu.png?raw=true
 # requires: aiohttp googletrans==4.0.0-rc1
 # ---------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ class Hetsu(loader.Module):
     """Search and install modules easily."""
 
     strings = {
-        "name": "HetaLib",
+        "name": "Hetsu",
 
         "no_q": "<emoji document_id=5854929766146118183>❌</emoji> <b>You need to write <code>{}hetsu [query]</code></b>",
         "inline_no_q": "<emoji document_id=5854929766146118183>❌</emoji> <b>Enter query.</b>",
