@@ -87,10 +87,9 @@ class Spotify4ik(loader.Module):
         
 <b><emoji document_id=5787544344906959608>ℹ️</emoji> Инструкция:</b>
 1. Создай публичный канал (название любое)
-2. Поставь каналу красивую аватарку с логом спотифая (пример: https://github.com/fajox1/famods/blob/main/assets/photo_2025-03-26_17-03-56.jpg)
-3. Добавь канал в профиль
-4. Добавь <code>@username</code> канала в config (<code>.cfg Spotify4ik</code> → <code>channel</code>)
-5. Готово"""        
+2. Добавь канал в профиль
+3. Добавь <code>@username</code> канала в config (<code>.cfg Spotify4ik</code> → <code>channel</code>)
+4. Готово"""        
     }
 
     def __init__(self):
