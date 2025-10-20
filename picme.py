@@ -69,8 +69,10 @@ class PicMe(loader.Module):
     async def watcher(self, event):
         try:
             if event.from_id != self.tg_id:
-                return
+                if event.from_id.user_id != self.tg_id:
+                    return
         except:
+            logger.info()
             return
         if not self.db.get(self.name, "picme", False):
             return
