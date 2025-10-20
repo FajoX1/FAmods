@@ -72,7 +72,6 @@ class PicMe(loader.Module):
                 if event.from_id.user_id != self.tg_id:
                     return
         except:
-            logger.info()
             return
         if not self.db.get(self.name, "picme", False):
             return
