@@ -43,3 +43,4 @@ evalaliases
 spotify4ik
 picme
 hetsu
+ptichki
