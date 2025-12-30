@@ -109,7 +109,7 @@ class Ptichki(loader.Module):
 
     @loader.command()
     async def ptichka(self, message):
-        """Сгенерировать стикер с птицей"""
+        """[текст] - Сгенерировать стикер с птицей"""
 
         text = utils.get_args_raw(message)
         if not text:
@@ -133,7 +133,7 @@ class Ptichki(loader.Module):
 
     @loader.command()
     async def ptichka_img(self, message):
-        """Сгенерировать фото с птицей"""
+        """[текст] - Сгенерировать фото с птицей"""
 
         text = utils.get_args_raw(message)
         if not text:
