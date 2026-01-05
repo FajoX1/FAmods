@@ -33,16 +33,16 @@ class Ptichki(loader.Module):
     strings = {
         "name": "Ptichki",
 
-        "no_args": "<emoji document_id=5314491961116232950>🦅</emoji> <b>Нужно </b><code>{}{} {}</code>",
+        "no_args": "<emoji document_id=5393175345367123686>🦅</emoji> <b>Нужно </b><code>{}{} {}</code>",
 
-        "generation": "<emoji document_id=5314482082691451962>🦅</emoji> <i>Генерирую птичку...</i>",
+        "generation": "<emoji document_id=5393165630151103839>🦅</emoji> <i>Генерирую птичку...</i>",
     }
 
     async def client_ready(self, client, db):
         self.db = db
         self._client = client
 
-        self.assets_link = "https://github.com/fajox1/famods/raw/main/assets"
+        self.assets_link = "https://famods.fajox.one/assets"
 
         self.font_url = f"{self.assets_link}/impact.ttf"
         self.birds_url = f"{self.assets_link}/birds/birds.json"
