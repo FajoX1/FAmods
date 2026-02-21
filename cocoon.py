@@ -126,7 +126,7 @@ class Cocoon(loader.Module):
             "<b><emoji document_id=5456307331644037599>❌</emoji>Неверный токен или у вас нет подписки <emoji document_id=5188377234380954537>🌘</emoji> HikkaHost.</b>\n\n"
             "<emoji document_id=5456672880605565619>🌘</emoji> Получить токен: @hikkahost_bot → <emoji document_id=5208521532942358129>🥚</emoji> Cocoon</b>"
         ),
-        "sending_request_to_cocoon": "<emoji document_id=5197252827247841976>🐣</emoji> <b>Отправляю запрос к Cocoon...</b>",
+        "sending_request_to_cocoon": "<emoji document_id=5197252827247841976>🐣</emoji> <b>Обрабатываю запрос в Cocoon...</b>",
         "thinking": (
             "<emoji document_id=5197252827247841976>🐣</emoji> <b>Думаю...</b>\n\n"
             "<blockquote>{thoughts}…</blockquote>"
