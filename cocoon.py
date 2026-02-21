@@ -116,9 +116,12 @@ class Cocoon(loader.Module):
 
     strings = {
         "name": "Cocoon [BETA]",
-        "try_again": "<emoji document_id=5456307331644037599>❌</emoji> <b>Что-то пошло не так. Попробуйте снова.</b>",
-        "no_args": "<emoji document_id=5456307331644037599>❌</emoji> <b>Нужно </b><code>{}{} {}</code>",
-        "no_token": "<emoji document_id=5456307331644037599>❌</emoji> <b>Нету токена! Вставь его в <code>{}cfg cocoon</code>",
+        "try_again": "<b><emoji document_id=5456307331644037599>❌</emoji> <b>Что-то пошло не так. Попробуйте снова.</b>",
+        "no_args": "<b><emoji document_id=5456307331644037599>❌</emoji> <b>Нужно </b><code>{}{} {}</code></b>",
+        "no_token": (
+            "<b><emoji document_id=5456307331644037599>❌</emoji> <b>Нету токена! Вставь его в <code>{}cfg cocoon</code>\n\n"
+            "<emoji document_id=5456672880605565619>🌘</emoji> Получить токен: @hikkahost_bot → <emoji document_id=5208521532942358129>🥚</emoji> Cocoon</b>"
+        ),
         "invalid_token_or_no_sub": (
             "<b><emoji document_id=5456307331644037599>❌</emoji>Неверный токен или у вас нет подписки <emoji document_id=5188377234380954537>🌘</emoji> HikkaHost.</b>\n\n"
             "<emoji document_id=5456672880605565619>🌘</emoji> Получить токен: @hikkahost_bot → <emoji document_id=5208521532942358129>🥚</emoji> Cocoon</b>"
