@@ -11,24 +11,52 @@
 # Description: Взаимодействие с Cocoon от HikkaHost
 # meta developer: @FAmods & @vsecoder_m
 # meta banner: https://github.com/FajoX1/FAmods/blob/main/assets/banners/cocoon.png?raw=true
-# requires: openai httpx aiohttp
+# requires: openai httpx aiohttp bs4 markdown
 # ---------------------------------------------------------------------------------
 
+import re
 import html
+import uuid
 import httpx
 import asyncio
 import logging
+import markdown
 
 from openai import AsyncOpenAI
 from typing import Optional, Any
 from dataclasses import dataclass
+from bs4 import BeautifulSoup, NavigableString
 from datetime import datetime, timezone, timedelta
 
+from telethon.tl.types import User
 from telethon.errors import MessageNotModifiedError
 
+from aiogram.exceptions import TelegramBadRequest
+
 from .. import loader, utils
+from ..inline.types import InlineCall
 
 logger = logging.getLogger(__name__)
+
+
+TG_ALLOWED = {
+    "b",
+    "strong",
+    "i",
+    "em",
+    "u",
+    "ins",
+    "s",
+    "strike",
+    "del",
+    "a",
+    "code",
+    "pre",
+    "blockquote",
+    "emoji",
+    "tg-emoji",
+}
+TAG_MAP = {"strong": "b", "em": "i", "del": "s", "strike": "s", "ins": "u"}
 
 
 @dataclass(frozen=True)
@@ -110,6 +138,92 @@ def _percent_remaining(spent: int, total: int) -> float:
     return (remaining / total) * 100.0
 
 
+def md_to_tg_html(text: str) -> str:
+    if not text:
+        return ""
+
+    raw_html = markdown.markdown(text, extensions=["fenced_code", "tables", "nl2br"])
+    soup = BeautifulSoup(raw_html, "html.parser")
+
+    def stringify(node, lang=None):
+        res = ""
+
+        for child in node.children:
+            if isinstance(child, NavigableString):
+                res += html.escape(str(child))
+
+            elif child.name:
+                tag_name = child.name
+
+                if tag_name in ["h1", "h2", "h3", "h4", "h5", "h6"]:
+                    content = stringify(child)
+                    res += f"<b>{content}</b>\n\n"
+                elif tag_name == "p":
+                    res += stringify(child) + "\n\n"
+                elif tag_name == "br":
+                    res += "\n"
+                elif tag_name == "li":
+                    res += f"• {stringify(child)}\n"
+                elif tag_name in ["ul", "ol"]:
+                    res += stringify(child) + "\n"
+                elif tag_name == "tr":
+                    res += "| " + stringify(child) + "\n"
+                elif tag_name in ["td", "th"]:
+                    res += stringify(child) + " | "
+
+                else:
+                    target_tag = TAG_MAP.get(tag_name, tag_name)
+
+                    if target_tag in TG_ALLOWED:
+                        inner_html = stringify(child)
+
+                        if not inner_html.strip() and target_tag not in ["code", "pre"]:
+                            res += inner_html
+                            continue
+
+                        if target_tag == "a":
+                            href = child.get("href", "")
+                            if href:
+                                res += f'<a href="{html.escape(href)}">{inner_html}</a>'
+                            else:
+                                res += inner_html
+                        elif target_tag == "code":
+                            cls = child.get("class", [])
+                            if cls and cls[0].startswith("language-"):
+                                res += f'<code class="{cls[0]}">{inner_html}</code>'
+                            else:
+                                res += f"<code>{inner_html}</code>"
+                        elif target_tag == "pre":
+                            res += f"<pre>{inner_html}</pre>"
+                        else:
+                            res += f"<{target_tag}>{inner_html}</{target_tag}>"
+                    else:
+                        res += stringify(child)
+        return res
+
+    final_text = stringify(soup)
+
+    final_text = re.sub(r"\n{3,}", "\n\n", final_text)
+    return final_text.strip()
+
+
+def repair_html_tags(html_chunk: str) -> str:
+    if not html_chunk:
+        return ""
+
+    newline_placeholder = f"MARKER_{uuid.uuid4().hex}"
+
+    protected_html = html_chunk.replace("\n", newline_placeholder)
+
+    soup = BeautifulSoup(protected_html, "html.parser")
+
+    repaired_html = soup.decode_contents(formatter=None)
+
+    final_html = repaired_html.replace(newline_placeholder, "\n")
+
+    return final_html
+
+
 @loader.tds
 class Cocoon(loader.Module):
     """Взаимодействие с Cocoon от HikkaHost"""
@@ -126,24 +240,25 @@ class Cocoon(loader.Module):
             "<b><emoji document_id=5456307331644037599>❌</emoji>Неверный токен или у вас нет подписки <emoji document_id=5188377234380954537>🌘</emoji> HikkaHost.</b>\n\n"
             "<emoji document_id=5456672880605565619>🌘</emoji> Получить токен: @hikkahost_bot → <emoji document_id=5208521532942358129>🥚</emoji> Cocoon</b>"
         ),
-        "sending_request_to_cocoon": "<emoji document_id=5197252827247841976>🐣</emoji> <b>Обрабатываю запрос в Cocoon...</b>",
+        "sending_request_to_cocoon": "<tg-emoji emoji-id=5197252827247841976>🐣</tg-emoji> <b>Обрабатываю запрос в Cocoon...</b>",
         "thinking": (
-            "<emoji document_id=5197252827247841976>🐣</emoji> <b>Думаю...</b>\n\n"
+            "<tg-emoji emoji-id=5197252827247841976>🐣</tg-emoji> <b>Думаю...</b>\n\n"
             "<blockquote>{thoughts}…</blockquote>"
         ),
         "answer": (
-            "<emoji document_id=5456217626957091223>🌘</emoji> <b>Вопрос:</b> {question}\n\n"
-            "<emoji document_id=5197252827247841976>🐣</emoji> <b>Размышления:</b>\n"
+            "<tg-emoji emoji-id=5456217626957091223>🌘</tg-emoji> <b>Вопрос:</b> {question}\n\n"
+            "<tg-emoji emoji-id=5197252827247841976>🐣</tg-emoji> <b>Размышления:</b>\n"
             "<blockquote expandable>{thoughts}</blockquote>\n\n"
-            "<emoji document_id=5208521532942358129>🥚</emoji> {answer}\n\n"
-            "<emoji document_id=5458567764341985638>🚀</emoji> <b>Модель</b>: <code>{model}</code>"
+            "<tg-emoji emoji-id=5208521532942358129>🥚</tg-emoji> {answer}\n\n"
+            "<tg-emoji emoji-id=5458567764341985638>🚀</tg-emoji> <b>Модель</b>: <code>{model}</code>"
         ),
         "usage": (
-            "<b><emoji document_id=5208521532942358129>🥚</emoji> Cocoon API\n\n"
-            "<emoji document_id=5458805877328875335>💡</emoji> Использовано:\n"
+            "<b><tg-emoji emoji-id=5208521532942358129>🥚</tg-emoji> Cocoon API\n\n"
+            "<tg-emoji emoji-id=5458805877328875335>💡</tg-emoji> Использовано:\n"
             "</b><i>• {current}/{total} ({percent}% осталось)</i><b>\n\n"
-            "<emoji document_id=5456591761558245861>⏳</emoji> Лимит сбросится через {days} день(-ей).</b>"
+            "<tg-emoji emoji-id=5456591761558245861>⏳</tg-emoji> Лимит сбросится через {days} день(-ей).</b>"
         ),
+        "again_kb": "🔄 Сгенерировать ещё раз",
     }
 
     def __init__(self):
@@ -163,6 +278,9 @@ class Cocoon(loader.Module):
                 "role",
                 "user",
                 lambda: "Роль user-сообщения (обычно user).",
+                validator=loader.validators.Choice(
+                    ["system", "developer", "user", "assistant", "tool"]
+                ),
             ),
             loader.ConfigValue(
                 "system_prompt",
@@ -201,12 +319,13 @@ class Cocoon(loader.Module):
         ):
             self._rebuild_openai_client()
 
-    async def _answer(self, message, text):
+    async def _answer(self, message, text, *args, **kwargs):
         try:
             if len(text) > 4096:
                 text = text[:4090] + "..."
-            return await utils.answer(message, text)
-        except MessageNotModifiedError:
+
+            return await utils.answer(message, repair_html_tags(text), *args, **kwargs)
+        except (MessageNotModifiedError, TelegramBadRequest):
             return message
 
     async def _fetch_usage(self) -> Optional[Usage]:
@@ -245,6 +364,9 @@ class Cocoon(loader.Module):
             updated_at=(_safe_int(data.get("updated_at"), 0) or None),
         )
 
+    async def _regenerate(self, call: InlineCall, arg1, arg2):
+        await self.cocoon(arg1, inline_message=arg2)
+
     @loader.command()
     async def ccusage(self, message):
         """Статистика использования Cocoon"""
@@ -280,8 +402,8 @@ class Cocoon(loader.Module):
         )
 
     @loader.command()
-    async def cocoon(self, message):
-        """Задать вопрос к ИИ"""
+    async def cocoon(self, message, inline_message=None):
+        """Задать вопрос к ИИ (поддерживает ответ на сообщение)"""
 
         q = utils.get_args_raw(message)
         if not q:
@@ -299,26 +421,72 @@ class Cocoon(loader.Module):
         if not usage:
             return await utils.answer(message, self.strings["invalid_token_or_no_sub"])
 
-        message = await utils.answer(message, self.strings["sending_request_to_cocoon"])
+        user_message = message
+
+        if not inline_message:
+            message = await self.inline.form(
+                text="...",
+                message=message,
+                force_me=False,
+            )
+        else:
+            message = inline_message
+
+        await utils.answer(message, self.strings["sending_request_to_cocoon"])
 
         self._ensure_client()
-
-        client = AsyncOpenAI(api_key=self.config["token"], base_url=self.api_url)
 
         system_prompt = (self.config.get("system_prompt") or "").strip()
 
         messages = []
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
-        messages.append({"role": self.config["role"] or "user", "content": q})
+
+        if user_message.reply_to:
+            reply = await user_message.get_reply_message()
+
+            entity_id = None
+
+            if hasattr(reply, "from_id") and reply.from_id:
+                if hasattr(reply.from_id, "user_id") and reply.from_id.user_id:
+                    entity_id = reply.from_id.user_id
+                elif hasattr(reply.from_id, "channel_id") and reply.from_id.channel_id:
+                    entity_id = reply.from_id.channel_id
+
+            if entity_id is None:
+                if hasattr(reply.peer_id, "user_id") and reply.peer_id.user_id:
+                    entity_id = reply.peer_id.user_id
+                else:
+                    entity_id = reply.peer_id.channel_id
+
+            entity = await self.client.get_entity(entity_id)
+
+            date = reply.date.strftime("%H:%M %d.%m.%Y UTC")
+
+            messages.append(
+                {
+                    "role": "user",
+                    "content": (
+                        (
+                            f"{entity.first_name} {entity.last_name or ''} (user id: {entity.id}) "
+                            if isinstance(entity, User)
+                            else f"Channel {entity.title} (channel id: {entity.id}) "
+                        )
+                        + f"msg id: {reply.id}, date: {date}: "
+                        + reply.message
+                    ),
+                }
+            )
+
+        messages.append({"role": self.config.get("role", "user"), "content": q})
 
         try:
-            response = await client.chat.completions.create(
+            response = await self._openai.chat.completions.create(
                 messages=messages,
                 stream=True,
                 max_tokens=self.config.get("max_tokens", 3900),
                 model=self.config.get("model", "Qwen/Qwen3-32B"),
-                temperature=self.config.get("temperature", 0.2)
+                temperature=self.config.get("temperature", 0.2),
             )
 
             response_text = ""
@@ -328,60 +496,57 @@ class Cocoon(loader.Module):
                 if chunk.choices and chunk.choices[0].delta.content:
                     chunk_buffer += chunk.choices[0].delta.content
 
-                if len(chunk_buffer) >= 150:
+                if len(chunk_buffer) >= 100:
                     response_text += chunk_buffer
                     chunk_buffer = ""
 
-                    thoughts = (
-                        response_text.replace("<think>", "")
-                        .replace("</think>", "")
-                        .strip()
+                    thoughts = response_text.split("</think>", 1)[0].replace(
+                        "<think>", ""
                     )
 
                     if "</think>" in response_text:
-                        after_think = response_text.split("</think>", 1)[-1].strip()
+                        after_think = response_text.split("</think>", 1)[1].strip()
                         await self._answer(
                             message,
                             self.strings["answer"].format(
-                                thoughts=thoughts[:300],
+                                thoughts=thoughts[:500],
                                 question=q,
-                                answer=_escape_text(after_think) + "…",
+                                answer=md_to_tg_html(_escape_text(after_think) + "…"),
                                 model=self.config["model"],
                             ),
                         )
                     else:
-                        thinking_text = (
-                            response_text.replace("<think>", "")
-                            .replace("</think>", "")
-                            .strip()
-                        )
                         await self._answer(
                             message,
                             self.strings["thinking"].format(
-                                thoughts=_escape_text(thinking_text)
+                                thoughts=md_to_tg_html(_escape_text(thoughts) + "…")
                             ),
                         )
 
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(0.2)
 
             if chunk_buffer:
                 response_text += chunk_buffer
 
-            if "</think>" in response_text:
-                after_think = response_text.split("</think>", 1)[-1].strip()
-            else:
-                after_think = (
-                    response_text.replace("<think>", "").replace("</think>", "").strip()
-                )
+            responses_data = response_text.split("</think>", 1)
+            thoughts = responses_data[0].strip().replace("<think>", "")
+            after_think = responses_data[1].strip()
 
             await self._answer(
                 message,
                 self.strings["answer"].format(
-                    thoughts=thoughts,
                     question=q,
-                    answer=_escape_text(after_think),
+                    thoughts=md_to_tg_html(_escape_text(thoughts[:500])),
+                    answer=md_to_tg_html(_escape_text(after_think)),
                     model=self.config["model"],
                 ),
+                reply_markup=[
+                    {
+                        "text": self.strings["again_kb"],
+                        "callback": self._regenerate,
+                        "args": [user_message, message],
+                    }
+                ],
             )
 
         except httpx.RemoteProtocolError:
